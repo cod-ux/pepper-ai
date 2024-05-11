@@ -51,6 +51,7 @@ text_chunks = character_text_splitter.create_documents(text_chunks)
 
 
 print("No. of text chunks: ", len(text_chunks))
+print(type(text_chunks[0]))
 
 ## Embed and export text_chunks to faiss_index - For im_rag retrieval
 
