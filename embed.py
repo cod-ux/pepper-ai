@@ -1,4 +1,4 @@
-from langchain.document_loaders import DirectoryLoader
+from langchain.document_loaders import DirectoryLoader, PyPDFLoader
 from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
 from langchain.vectorstores.faiss import FAISS
 from langchain.embeddings import SentenceTransformerEmbeddings
@@ -8,8 +8,7 @@ from langchain_openai.embeddings import OpenAIEmbeddings
 import pandas as pd
 import os
 import toml
-
-## Load documents
+import os
 
 secrets_path = "/Users/suryaganesan/Documents/GitHub/im_rag/im_rag/secrets.toml"
 
@@ -19,39 +18,35 @@ model_name_2 = "text-embedding-3-large"
 os.environ["OPENAI_API_KEY"] = toml.load(secrets_path)["OPENAI_API_KEY"]
 
 source_path = "/Users/suryaganesan/vscode/ml/projects/reporter/RAG_docs/"
-md_loader = DirectoryLoader(source_path)
 
-md_documents = md_loader.load()
+def list_files(directory):
+    file_list = []
+    for root, _, files in os.walk(directory):
+        for file_name in files:
+            file_list.append(os.path.join(root, file_name))
+    return file_list
 
-print("No. of docs: ", len(md_documents))
-
-####### Split documents
-
-"""mark_down_splitter = MarkdownHeaderTextSplitter(headers_to_split_on = [
-    ("#", "Header 1"),
-    ("##", "Header 2"),
-    ("###", "Header 3"),
-])"""
-
-character_text_splitter = RecursiveCharacterTextSplitter(
-    chunk_size = 1500,
-    chunk_overlap = 225,
-    length_function = len,
-    is_separator_regex = False,
-)
-
-content = [doc.page_content for doc in md_documents]
-seperator = "\n"
-content = seperator.join(content)
+directory = "/Users/suryaganesan/vscode/ml/projects/reporter/RAG_docs/"
+files = list_files(directory)
 
 
-#text_chunks = mark_down_splitter.split_text(content)
-text_chunks = character_text_splitter.split_text(content)
-text_chunks = character_text_splitter.create_documents(text_chunks)
+page_list = []
+
+for file_path in files:
+    load = PyPDFLoader(file_path)
+    pages = load.load_and_split()
+    page_list += pages
+
+x = 10
+
+print(page_list[x])
+print(len(page_list[x].page_content))
 
 
-print("No. of text chunks: ", len(text_chunks))
-print(type(text_chunks[0]))
+for i in page_list:
+    pages
+
+print("No. of docs: ", len(page_list))
 
 ## Embed and export text_chunks to faiss_index - For im_rag retrieval
 
@@ -61,7 +56,7 @@ print("Embedding chunks and exporting to faiss...")
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
 path = "/Users/suryaganesan/vscode/ml/projects/reporter/"
 
-db = FAISS.from_documents(text_chunks, embeddings)
+db = FAISS.from_documents(page_list, embeddings)
 db.save_local(path+'faiss_index')
 
 print("...Program terminated")

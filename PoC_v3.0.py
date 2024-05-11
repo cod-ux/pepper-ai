@@ -9,7 +9,8 @@ from utils import (
     load_excel_to_json, 
     save_last_as_json, 
     query_llm, 
-    extract_code
+    extract_code_from_llm,
+    load_excel_to_df
 )
 
 from langchain.vectorstores.faiss import FAISS
@@ -40,19 +41,51 @@ db = FAISS.load_local(path, embeddings, allow_dangerous_deserialization=True)
 retriever = db.as_retriever(search_kwargs={"k": 1})
 
 
+def generate_code(request, source):
+    #code_example = retriever.invoke(f"Find a python code example relating to: {request}")[0].page_content
+    df = load_excel_to_df(source)
+    head_view = df.head().to_string(index=True)
 
+    user_prompt = f"""
+Write code to Import the file {source} with openpyxl and execute this user request: {request}
+
+Do not use pandas. Save the final output again as {source}
+
+Here is how the first few rows of the excel file looks like:
+{head_view}
+
+    """
+    python_respone = extract_code_from_llm(query_llm(user_prompt).content)
+
+    return python_respone
+
+def review_code(request, code_response, source):
+    code_example = retriever.invoke(f"Find a python code example relating to: {request}")[0].page_content
+    
+    user_prompt = f"""
+This was the user request: {request}
+
+This is the code I am going to execute for the excel file called {source}:
+{code_response}
+
+Review and rewrite the code if there are any errors based on the openpyxl documentation given below:
+{code_example}
+
+Prefer to write excel formulas instead of doing manual data entry. If there is no error return the original code and save the file as {source}.
+    """
+
+    reviewed_code_response = extract_code_from_llm(query_llm(user_prompt).content)
+
+    return reviewed_code_response
 
 # Confirming source file
 
 while True:
     try:
         wait = input(f"Excel source: {source}\nProceeding on confirmation...")
-        json_text = load_excel_to_json(source)
-        json_obj = json.loads(json_text)[:5]
-        json_text = json.dumps(json_obj, indent=4)
-        save_last_as_json(json_text)
-        print("\nLength of JSON text: ", len(json_text))
-        print("Print JSON object: \n", json_text)
+        df = load_excel_to_df(source)
+        df_head = df.head().to_string()
+        print("\nLength of Dataframe: ", len(df))
         break
 
     except Exception as e:
@@ -66,30 +99,22 @@ print("--------------- COMMAND LINE -----------------")
 while True:
 
     request = input(">> ")
-    with open("last_save.json", "r") as last_save:
-        json_text = json.load(last_save)
 
     if request:
-        if request != "quit" and request != "save":
-            code_cnt = retriever.invoke(request)[0].page_content
-            prompt = f"""
-            Here are the first few rows of an excel file called {source}: \n
-            {json_text}\n\n
+        if request != "quit":
+            print("Generating script")
+            script_generated = generate_code(request, source)
 
-            Provide ONLY the python code to execute the user's instructions. \n
-            User Instruction: {request}\n\n
+            #print("Code generated: \n", script_generated)
+            #print("\n\nReviewing code...")
 
-            Here is some example code from openpyxl's documentation to help you come up with the code:
-            {code_cnt}\n\n
-            """
-            python_respone = query_llm(prompt)
+            final_script = script_generated
 
-            print("Code to be executed: \n", extract_code(python_respone.content))
+            print(f"Script reviewed: \n{final_script}")
 
             try:
-                print("Initiating code execution...")
-                exec(extract_code(python_respone.content))
-                #print("Code: \n", extract_code(python_respone.content))
+                print("\n\nInitiating code execution...")
+                exec(final_script)
 
             except Exception as e:
                 print(f"Error: {e}")

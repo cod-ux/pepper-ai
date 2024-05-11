@@ -3,7 +3,6 @@
         "ORDERNUMBER",
         "QUANTITYORDERED",
         "DEALSIZE",
-        "PRICEEACH",
         "ORDERLINENUMBER",
         "SALES",
         "ORDERDATE",
@@ -25,13 +24,13 @@
         "TERRITORY",
         "CONTACTLASTNAME",
         "random number",
-        "relevance"
+        "relevance",
+        "test_column"
     ],
     [
-        10134,
+        "=RANDBETWEEN(1,1000)",
         41,
         "Medium",
-        "=RAND()",
         2,
         3884.34,
         "7/1/2003 0:00",
@@ -53,13 +52,13 @@
         "EMEA",
         "Da Cunha",
         85,
-        55
+        55,
+        444
     ],
     [
-        10145,
+        "=RANDBETWEEN(1,1000)",
         45,
         "Medium",
-        "=RAND()",
         6,
         3746.7,
         "8/25/2003 0:00",
@@ -81,13 +80,13 @@
         null,
         "Young",
         91,
-        13
+        13,
+        221
     ],
     [
-        10159,
+        "=RANDBETWEEN(1,1000)",
         49,
         "Medium",
-        "=RAND()",
         14,
         5205.27,
         "10/10/2003 0:00",
@@ -109,13 +108,13 @@
         null,
         "Brown",
         92,
-        14
+        14,
+        718
     ],
     [
-        10168,
+        "=RANDBETWEEN(1,1000)",
         36,
         "Medium",
-        "=RAND()",
         1,
         3479.76,
         "10/28/2003 0:00",
@@ -137,6 +136,7 @@
         null,
         "Hirano",
         34,
-        74
+        74,
+        241
     ]
 ]
