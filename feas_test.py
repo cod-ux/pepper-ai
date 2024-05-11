@@ -6,7 +6,7 @@ import json
 import xlwings as xl
 import xlrd
 
-source = "/Users/suryaganesan/library/containers/com.microsoft.excel/data/test_book.xlsx"
+source = "/Users/suryaganesan/library/containers/com.microsoft.excel/data/sales_data_copy.xlsx"
 
 @st.cache_data
 # Function to edit and save Excel file
@@ -20,12 +20,12 @@ def edit_save_xl(file, cell_location, cell_value):
 @st.cache_data
 def excel_to_df(file_path, sheet_name):
     # Load Excel file
-    workbook = load_workbook(filename=file_path, data_only=True)
+    workbook = load_workbook(filename=file_path, data_only=False)
     sheet = workbook[sheet_name]
 
     # Convert Excel data to a list of dictionaries
     data = []
-    for row in sheet.iter_rows(values_only=True):
+    for row in sheet.iter_rows(values_only=False):
         data.append(row)
 
     # Convert list of dictionaries to JSON
@@ -40,10 +40,10 @@ def excel_to_df(file_path, sheet_name):
 
 @st.cache_data
 def df_from_excel(path):
-    app = xl.App(visible=False)
+    app = xl.App(visible=True)
     book = app.books.open(path)
     book.save()
-    app.kill()
+    #app.kill()
     return pd.read_excel(path)
 
 def reload_excel():
