@@ -4,6 +4,7 @@ import os
 import toml
 
 from openai import OpenAI
+import pandas as pd
 
 
 # Setup
@@ -17,13 +18,7 @@ client = OpenAI()
 
 
 def query_llm(user_msg, client=client):
-    system_msg = f"""You are an AI chatbot that will be given the name of an excel file, a JSON representation of the excel file and some instructions from the user on how to manipulate the excel file.
-
-    Write python code with the openpyxl library that can be used to execute the user's commands on the excel file.
-
-    Load the excel file, execute the user commands, convert it back to excel and save it. Prefer to use formulas over manual data entry.
-    
-    Provide error free PYTHON CODE that I will dynamically execute as part of another program with the exec() function. Provide ONLY the CODE.
+    system_msg = f"""You are an AI python programmer. You are adept in writing and reviewing code
     """
 
     messages = [
@@ -63,13 +58,27 @@ def load_excel_to_json(file_path):
 
     return jstring
 
+def load_excel_to_df(file_path):
+    # Load Excel file
+    workbook = load_workbook(filename=file_path, data_only=False)
+    sheet = workbook.active
+
+    # Convert Excel data to a list of dictionaries
+    data = []
+    for row in sheet.iter_rows(values_only=True):
+        if any(row):
+           data.append(row)
+
+    df = pd.DataFrame(data[1:], columns=data[0])
+
+    return df
 
 def save_last_as_json(json_text):
     with open("last_save.json", "w") as json_file:
         data = json.loads(json_text)
         json.dump(data, json_file, indent=4)
 
-def extract_code(content):
+def extract_code_from_llm(content):
     start_index = content.find("""```python""") + len("""'''python""")
     end_index = content.find("""```""", start_index)
 
