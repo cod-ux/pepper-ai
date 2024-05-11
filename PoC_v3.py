@@ -117,68 +117,31 @@ ONLY RETURN CODE AS OUTPUTS, NO NEED FOR EXPLANATIONS.
 
     return reviewed_code_response
 
-# Confirming source file
+def refresh_code(request, error, source, plan, old_code):
+    code_example = retriever.invoke(f"Find a python code example relating to: {request}")[0].page_content
+    
+    user_prompt = f"""
+This was the user request: {request}
 
-while True:
-    try:
-        wait = input(f"Excel source: {source}\nProceeding on confirmation...")
-        dfs, sheet_names = load_sheets_to_dfs(source_path)
-        for df in dfs:
-            print("Df:")
-            print(df.head(3))
-        print("\nLength of Dataframe: ", len(df))
-        break
+This is the code I tried to execute on the excel file called {source}:
+{old_code}
 
-    except Exception as e:
-        print("Error: ", e)
+Here is the plan I wanted to execute to through this code. Review and if necessary rewrite the code to make sure the code follows the plan as much as possible:
+{plan}
 
-
-# Application begins
-
-print("--------------- COMMAND LINE -----------------")
-
-while True:
-
-    request = input(">> ")
-
-    if request:
-        if request != "quit":
-            print("Creating a plan...")
-            plan = create_plan(request, source_path)
-
-            print(f"The plan: \n{plan}")
-
-            print("Generating script")
-            script_generated = generate_code(request, source_path, plan)
-
-            print("Code generated: \n", script_generated)
-            print("\n\nReviewing code...")
-
-            reviewed_script = review_code(request, script_generated, source, plan)
-
-            final_script = reviewed_script
-
-            print(f"Script reviewed: \n{final_script}")
-
-            try:
-                print("\n\nInitiating code execution...")
-                exec(final_script)
-
-            except Exception as e:
-                print(f"Error: {e}")
-
-            dfs, sheet_names = load_sheets_to_dfs(source_path)
-            for df in dfs:
-                print("Df:")
-                print(df.head(3))
-
-        else:
-            break
+Here is some relevant openpyxl documntation texts. Review and rewrite the code to make sure there are NO errors:
+{code_example}
 
 
-print("---------------EOP---------------")
+Prefer to write excel formulas instead of doing manual data entry. If there is no error return the original code and save the file as {source}.
+Prefer to use move_range() function if the user asks to move columns.
+ONLY RETURN CODE AS OUTPUTS, NO NEED FOR EXPLANATIONS.
+    """
 
-# End of Program
+    refreshed_code_response = extract_code_from_llm(query_llm(user_prompt).content)
+
+    return refreshed_code_response
+
 
 
 
