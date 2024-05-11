@@ -1,62 +1,22 @@
-from langchain.document_loaders import DirectoryLoader, PyPDFLoader
-from langchain_text_splitters import MarkdownHeaderTextSplitter, RecursiveCharacterTextSplitter
-from langchain.vectorstores.faiss import FAISS
-from langchain.embeddings import SentenceTransformerEmbeddings
-from sentence_transformers import SentenceTransformer
-from langchain_openai.embeddings import OpenAIEmbeddings
-
 import pandas as pd
-import os
-import toml
-import os
+from openpyxl import load_workbook
 
-secrets_path = "/Users/suryaganesan/Documents/GitHub/im_rag/im_rag/secrets.toml"
+def excel_to_df(file_path):
+    wb = load_workbook(filename=file_path, data_only=False)
+    dfs = []
+    for sheet_name in wb.sheetnames:
+        ws = wb[sheet_name]
+        data = ws.values
+        columns = next(data)
+        data = list(data)
+        dfs.append(pd.DataFrame(data, columns=columns))
+    return dfs
 
-model_name = "text-embedding-ada-002"
-model_name_2 = "text-embedding-3-large"
+# Example usage:
+file_path = "sales_data_sample.xlsx"
+dfs = excel_to_df(file_path)
 
-os.environ["OPENAI_API_KEY"] = toml.load(secrets_path)["OPENAI_API_KEY"]
-
-source_path = "/Users/suryaganesan/vscode/ml/projects/reporter/RAG_docs/"
-
-def list_files(directory):
-    file_list = []
-    for root, _, files in os.walk(directory):
-        for file_name in files:
-            file_list.append(os.path.join(root, file_name))
-    return file_list
-
-directory = "/Users/suryaganesan/vscode/ml/projects/reporter/RAG_docs/"
-files = list_files(directory)
-
-
-page_list = []
-
-for file_path in files:
-    load = PyPDFLoader(file_path)
-    pages = load.load_and_split()
-    page_list += pages
-
-x = 10
-
-print(page_list[x])
-print(len(page_list[x].page_content))
-
-
-for i in page_list:
-    pages
-
-print("No. of docs: ", len(page_list))
-
-## Embed and export text_chunks to faiss_index - For im_rag retrieval
-
-print("Embedding chunks and exporting to faiss...")
-
-#embeddings = SentenceTransformerEmbeddings(model_name='all-MiniLM-L6-v2')
-embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-path = "/Users/suryaganesan/vscode/ml/projects/reporter/"
-
-db = FAISS.from_documents(page_list, embeddings)
-db.save_local(path+'faiss_index')
-
-print("...Program terminated")
+print("No. of dfs: ", len(dfs))
+for df in dfs:
+    print("New one: ")
+    print(df.head(3))

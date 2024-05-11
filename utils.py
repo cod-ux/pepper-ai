@@ -18,7 +18,7 @@ client = OpenAI()
 
 
 def query_llm(user_msg, client=client):
-    system_msg = f"""You are an AI python programmer. You are adept in writing and reviewing code
+    system_msg = f"""You are an AI python programmer. You are adept in writing and reviewing code. Assume that openpyxl library is already installed when writing code.
     """
 
     messages = [
@@ -36,7 +36,7 @@ def query_llm(user_msg, client=client):
     )
 
     response = client.chat.completions.create(
-        model="gpt-4",
+        model="gpt-4-turbo-preview",
         messages=messages
     ).choices[0].message
 
@@ -72,6 +72,17 @@ def load_excel_to_df(file_path):
     df = pd.DataFrame(data[1:], columns=data[0])
 
     return df
+
+def load_sheets_to_dfs(file_path):
+    wb = load_workbook(filename=file_path, data_only=False)
+    dfs = []
+    for sheet_name in wb.sheetnames:
+        ws = wb[sheet_name]
+        data = ws.values
+        columns = next(data)
+        data = list(data)
+        dfs.append(pd.DataFrame(data, columns=columns))
+    return dfs, wb.sheetnames
 
 def save_last_as_json(json_text):
     with open("last_save.json", "w") as json_file:
