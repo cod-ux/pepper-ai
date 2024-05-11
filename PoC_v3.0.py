@@ -42,8 +42,32 @@ db = FAISS.load_local(path, embeddings, allow_dangerous_deserialization=True)
 
 retriever = db.as_retriever(search_kwargs={"k": 1})
 
+def create_plan(request, source):
+    #code_example = retriever.invoke(f"Find a python code example relating to: {request}")[0].page_content
+    df = load_excel_to_df(source)
+    dfs, sheet_names = load_sheets_to_dfs(source)
+    head_view = ''
 
-def generate_code(request, source):
+    for i, df in enumerate(dfs):
+        head_view += f"\nSheet {i}: {sheet_names[i]}\nSheet head:\n{df.head(3)}\n\n"
+
+    user_prompt = f"""
+The user wants to do the following to their excel file called {source}: {request}.
+
+Create a plan for how an excel user can achieve the end goal by breaking the goal down into a list of simple executable steps, which when executed should perfectly fullfill the user's request.
+
+The output should be ONLY be a list of steps that needs to be taken. No explanantion is required.
+ALWAYS save the file under the same name: {source}
+
+There are {len(dfs)} sheets in the excel file. Here is how the first few rows of those sheets look like:
+{head_view}
+    """
+    plan = extract_code_from_llm(query_llm(user_prompt).content)
+
+    return plan
+
+
+def generate_code(request, source, plan):
     #code_example = retriever.invoke(f"Find a python code example relating to: {request}")[0].page_content
     df = load_excel_to_df(source)
     dfs, sheet_names = load_sheets_to_dfs(source)
@@ -55,6 +79,9 @@ def generate_code(request, source):
     user_prompt = f"""
 Write code to Import the file {source} with openpyxl and execute this user request: {request}
 
+Use this step-by-step plan an excel user would use to achieve the final outcome:
+{plan}
+
 Do not use pandas. Save the final output again as {source}
 
 There are {len(dfs)} sheets in the excel file. Here is how the first few rows of those sheets look like:
@@ -65,7 +92,7 @@ There are {len(dfs)} sheets in the excel file. Here is how the first few rows of
 
     return python_respone
 
-def review_code(request, code_response, source):
+def review_code(request, code_response, source, plan):
     code_example = retriever.invoke(f"Find a python code example relating to: {request}")[0].page_content
     
     user_prompt = f"""
@@ -74,11 +101,16 @@ This was the user request: {request}
 This is the code I am going to execute for the excel file called {source}:
 {code_response}
 
-Review and rewrite the code if there are any errors based on the openpyxl documentation given below:
+Here is the plan used to create this code. Review and if necessary rewrite the code to make sure the code follows the plan as much as possible:
+{plan}
+
+Here is some relevant openpyxl documntation texts. Review and rewrite the code to make sure there are NO errors:
 {code_example}
+
 
 Prefer to write excel formulas instead of doing manual data entry. If there is no error return the original code and save the file as {source}.
 Prefer to use move_range() function if the user asks to move columns.
+ONLY RETURN CODE AS OUTPUTS, NO NEED FOR EXPLANATIONS.
     """
 
     reviewed_code_response = extract_code_from_llm(query_llm(user_prompt).content)
@@ -111,13 +143,18 @@ while True:
 
     if request:
         if request != "quit":
+            print("Creating a plan...")
+            plan = create_plan(request, source_path)
+
+            print(f"The plan: \n{plan}")
+
             print("Generating script")
-            script_generated = generate_code(request, source)
+            script_generated = generate_code(request, source_path, plan)
 
             print("Code generated: \n", script_generated)
             print("\n\nReviewing code...")
 
-            reviewed_script = review_code(request, script_generated, source)
+            reviewed_script = review_code(request, script_generated, source, plan)
 
             final_script = reviewed_script
 
@@ -137,7 +174,6 @@ while True:
 
         else:
             break
-
 
 
 print("---------------EOP---------------")
