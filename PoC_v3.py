@@ -6,24 +6,19 @@ from openpyxl import load_workbook
 from openai import OpenAI
 
 from utils import (
-    load_excel_to_json, 
-    save_last_as_json, 
-    query_llm, 
+    query_llm_gpt4,
+    query_llm_gpt35, 
     extract_code_from_llm,
     load_excel_to_df,
     load_sheets_to_dfs
 )
 
 from langchain.vectorstores.faiss import FAISS
-from langchain.chat_models import ChatOpenAI
 from langchain_openai.embeddings import OpenAIEmbeddings
 
-from phoenix.trace.openai import OpenAIInstrumentor
-import phoenix as px
 
 # Setup
 
-session = px.launch_app()
 source = "sales_data_sample.xlsx"
 source_path = "sales_data_sample.xlsx"
 secrets = "/Users/suryaganesan/Documents/GitHub/Replicate/secrets.toml"
@@ -32,7 +27,6 @@ os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 
 client = OpenAI()
 
-OpenAIInstrumentor().instrument()
 
 # Code docs RAG
 
@@ -62,7 +56,7 @@ ALWAYS save the file under the same name: {source}
 There are {len(dfs)} sheets in the excel file. Here is how the first few rows of those sheets look like:
 {head_view}
     """
-    plan = extract_code_from_llm(query_llm(user_prompt).content)
+    plan = extract_code_from_llm(query_llm_gpt4(user_prompt).content)
 
     return plan
 
@@ -88,7 +82,7 @@ There are {len(dfs)} sheets in the excel file. Here is how the first few rows of
 {head_view}
 
     """
-    python_respone = extract_code_from_llm(query_llm(user_prompt).content)
+    python_respone = extract_code_from_llm(query_llm_gpt35(user_prompt).content)
 
     return python_respone
 
@@ -113,7 +107,7 @@ Prefer to use move_range() function if the user asks to move columns.
 ONLY RETURN CODE AS OUTPUTS, NO NEED FOR EXPLANATIONS.
     """
 
-    reviewed_code_response = extract_code_from_llm(query_llm(user_prompt).content)
+    reviewed_code_response = extract_code_from_llm(query_llm_gpt35(user_prompt).content)
 
     return reviewed_code_response
 
@@ -138,7 +132,7 @@ Prefer to use move_range() function if the user asks to move columns.
 ONLY RETURN CODE AS OUTPUTS, NO NEED FOR EXPLANATIONS.
     """
 
-    refreshed_code_response = extract_code_from_llm(query_llm(user_prompt).content)
+    refreshed_code_response = extract_code_from_llm(query_llm_gpt4(user_prompt).content)
 
     return refreshed_code_response
 

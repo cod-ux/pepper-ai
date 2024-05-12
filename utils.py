@@ -17,7 +17,7 @@ client = OpenAI()
 
 
 
-def query_llm(user_msg, client=client):
+def query_llm_gpt4(user_msg, client=client):
     system_msg = f"""You are an AI python programmer. You are adept in writing and reviewing code. Assume that openpyxl library is already installed when writing code.
     """
 
@@ -37,6 +37,31 @@ def query_llm(user_msg, client=client):
 
     response = client.chat.completions.create(
         model="gpt-4-turbo-preview",
+        messages=messages
+    ).choices[0].message
+
+    return response
+
+def query_llm_gpt35(user_msg, client=client):
+    system_msg = f"""You are an AI python programmer. You are adept in writing and reviewing code. Assume that openpyxl library is already installed when writing code.
+    """
+
+    messages = [
+        {
+            "role": "system",
+            "content": system_msg
+        }
+    ]
+
+    messages.append(
+        {
+            "role": "user",
+            "content": user_msg
+        }
+    )
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
         messages=messages
     ).choices[0].message
 
@@ -96,5 +121,4 @@ def extract_code_from_llm(content):
     python_code = content[start_index:end_index].strip()
     return python_code
 
-print("Program begins....\n\n")
 
