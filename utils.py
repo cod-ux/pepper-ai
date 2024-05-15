@@ -116,7 +116,7 @@ def save_last_as_json(json_text):
 
 def extract_code_from_llm(content):
     start_index = content.find("""```python""") + len("""'''python""")
-    end_index = content.find("""```""", start_index)
+    end_index = content.find("""```""", start_index) + len("""```""")
 
     python_code = content[start_index:end_index].strip()
     return python_code
