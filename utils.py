@@ -36,7 +36,7 @@ def query_llm_gpt4(user_msg, client=client):
     )
 
     response = client.chat.completions.create(
-        model="gpt-4-turbo-preview",
+        model="gpt-4o",
         messages=messages
     ).choices[0].message
 
@@ -104,9 +104,16 @@ def load_sheets_to_dfs(file_path):
     for sheet_name in wb.sheetnames:
         ws = wb[sheet_name]
         data = ws.values
-        columns = next(data)
-        data = list(data)
-        dfs.append(pd.DataFrame(data, columns=columns))
+        try:
+            columns = next(data)
+            data = list(data)
+            if data:
+                dfs.append(pd.DataFrame(data, columns=columns))
+            else:
+                dfs.append(pd.DataFrame())
+        
+        except StopIteration:
+            dfs.append(pd.DataFrame())
     return dfs, wb.sheetnames
 
 def save_last_as_json(json_text):
@@ -115,8 +122,8 @@ def save_last_as_json(json_text):
         json.dump(data, json_file, indent=4)
 
 def extract_code_from_llm(content):
-    start_index = content.find("""```python""") + len("""'''python""")
-    end_index = content.find("""```""", start_index) + len("""```""")
+    start_index = content.find("""```python""") + len("""```python""")
+    end_index = content.find("""```""", start_index)
 
     python_code = content[start_index:end_index].strip()
     return python_code

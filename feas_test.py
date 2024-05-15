@@ -1,6 +1,8 @@
 import os
+import time
 
 import streamlit as st
+from st_aggrid import AgGrid
 import pandas as pd
 from openpyxl import load_workbook
 
@@ -26,78 +28,101 @@ if "messages" not in st.session_state.keys():
 def copy_excel_locally(file):
     fname, ext = os.path.splitext(file.name)
     new_fname = f"{fname}_copy{ext}"
+    old_fname = f"{fname}{ext}"
     file_root = os.path.join("/Users/suryaganesan/vscode/ml/projects/reporter/uploads", new_fname)
+    original_path = os.path.join("/Users/suryaganesan/vscode/ml/projects/reporter/", old_fname)
     with open(file_root, "wb") as local_file:
         local_file.write(file.read())
-    #st.success(f"File saved as {new_fname}")
+    st.success(f"File saved as {new_fname}")
 
     file_path = f"/Users/suryaganesan/vscode/ml/projects/reporter/uploads/{new_fname}"
 
     return file_path
 
+def copy_excel_locally_from_path(file):
+    fname, ext = os.path.splitext(file)
+    new_fname = f"{fname}_copy{ext}"
+    file_root = os.path.join("/Users/suryaganesan/vscode/ml/projects/reporter/uploads", new_fname)
+    with open(file_root, "wb") as local_file:
+        local_file.write(file.read())
+    st.success(f"File saved as {new_fname}")
+
+    file_path = f"/Users/suryaganesan/vscode/ml/projects/reporter/uploads/{new_fname}"
+
+    return file_path
+
+
+def handle_duplicate_columns(columns):
+    counts = {}
+    new_columns = []
+
+    for col_name in columns:
+        if col_name in counts:
+            counts[col_name] += 1
+            new_columns.append(f"{col_name}_{counts[col_name]}")
+        else:
+            counts[col_name] = 0
+            new_columns.append(col_name)
+    
+    return new_columns
+
+
 @st.cache_data()
 def load_sheets_to_dfs(file_path):
-    wb = load_workbook(filename=file_path, data_only=False)
+    app = xl.App(visible=False)
+    wb = app.books.open(file_path)
     dfs = []
-    for sheet_name in wb.sheetnames:
-        ws = wb[sheet_name]
-        data = ws.values
-        columns = next(data)
-        data = list(data)
-        dfs.append(pd.DataFrame(data, columns=columns))
-    return dfs, wb.sheetnames
+    for sheet in wb.sheets:
+        df = sheet.used_range.options(pd.DataFrame, header=True, index=True).value
+        df.columns = handle_duplicate_columns(df.columns)
+        dfs.append(df)
 
-def reload_sheets_to_dfs(file_path):
-    wb = load_workbook(filename=file_path, data_only=False)
-    dfs = []
-    for sheet_name in wb.sheetnames:
-        ws = wb[sheet_name]
-        data = ws.values
-        columns = next(data)
-        data = list(data)
-        dfs.append(pd.DataFrame(data, columns=columns))
-    return dfs, wb.sheetnames
+    sheet_names = [sheet.name for sheet in wb.sheets]
+    wb.close()
+    app.quit()
+    return dfs, sheet_names
+
 
 def save_sheets(path):
     app = xl.App(visible=False)
-    book = xl.Book(path)
+    book = app.books.open(path)
     book.save()
     book.close()
     app.kill()
-    app.quit()
     return True
 
 # Main function
-def main():
     # Upload Excel file
-    header_ph = st.empty()
-    header_ph.markdown( "<h1 style='text-align: center;'>Command AI: Clean & prepare your excel faster</h1>", unsafe_allow_html=True)
-    uploader_ph = st.empty()
+header_ph = st.empty()
+header_ph.markdown( "<h3 style='text-align: center;'>Command AI: Spend less time preparing your data for analysis</h3>", unsafe_allow_html=True)
+uploader_ph = st.empty()
 
-    with uploader_ph.container():
-        uploaded_file = st.file_uploader("Upload Excel file", type=["xlsx", "xls"])
+with uploader_ph.container():
+       uploaded_file = st.file_uploader("Upload Excel file", type=["xlsx", "xls"])
 
-    if uploaded_file is not None:
+while uploaded_file is None:
+    continue
 
+def main():
+    if "file_path" not in st.session_state:
         file_path = copy_excel_locally(uploaded_file)
-        
-        if "file_path" not in st.session_state:
-           file_path = copy_excel_locally(uploaded_file)
-           st.session_state.file_path = file_path
+        st.session_state.file_path = file_path
+    else:
+        file_path = st.session_state.file_path
 
-        else:
-            file_path = st.session_state.file_path 
-
+    if file_path is not None:
         # Save excel file
-        st.text("Current State: ")
+        st.markdown("<h4>Current State: </h4>", unsafe_allow_html=True)
+        st.sidebar.title("Excel sheets")
+        
         dfs, sheets = load_sheets_to_dfs(file_path)
 
         select_sheet_ph = st.empty()
 
         with select_sheet_ph.container():
-            current_sheet = st.selectbox(
+            current_sheet = st.sidebar.selectbox(
                 "Select sheet",
-                (sheets)
+                (sheets),
             )
 
         # Display current state
@@ -110,13 +135,15 @@ def main():
         
         if request:
             st.session_state.messages.append({"role": "human", "content": request})
-            with st.chat_message("user"):
+            with st.chat_message("human"):
                 st.write(request)
 
         if st.session_state.messages[-1]["role"] != "ai":
             if request:
                with st.chat_message("ai"):
                  if request != "quit":
+                    test = save_sheets(file_path)
+                    st.write(f"Saving and closing sheets: {test}")
                     st.write("Creating a plan...")
                     plan = create_plan(request, file_path)
 
@@ -137,6 +164,8 @@ def main():
                     try:
                         st.write("\n\nInitiating code execution...")
                         exec(final_script)
+                        status = save_sheets(st.session_state.file_path)
+                        st.write(f"Saving changes: {status}")
 
                     except Exception as e:
                         st.write(f"Error: {e}")
@@ -147,33 +176,35 @@ def main():
                         try:
                             st.write("Initializing new refreshed code....")
                             exec(new_code)
+                            status = save_sheets(st.session_state.file_path)
+                            st.write(f"Saving changes: {status}")
 
                         except Exception as e2:
                             st.write(f"New Error: {e2}")
 
-                
-                    trigger = save_sheets(file_path)
-                    if trigger:
-                        st.cache_data.clear()
+#        refresh = st.button("Refresh")
+#        if refresh:
+                        st.cache_data.clear()  
 
                         dfs, sheets = load_sheets_to_dfs(file_path)
 
+                        print(dfs[0])
+                        print(file_path)
+
                         current_table_placeholder.empty()
                         select_sheet_ph.empty()
-                        uploader_ph.empty()
 
                         with select_sheet_ph.container():
-                            current_sheet = st.selectbox(
+                            current_sheet = st.sidebar.selectbox(
                                 "Select sheets",
-                                (sheets)
+                                (sheets),
                             )
 
                         with current_table_placeholder.container():
                             st.dataframe(dfs[sheets.index(current_sheet)])
 
-                        trigger = False
-
-
+if __name__ == "__main__":
+    main()
 
 
         # Display current state
@@ -189,8 +220,3 @@ def main():
 
     # Create buttons for each sheet
     # if st.button show df for each sheet
-
-
-
-if __name__ == "__main__":
-    main()

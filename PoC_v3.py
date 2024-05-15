@@ -82,7 +82,7 @@ There are {len(dfs)} sheets in the excel file. Here is how the first few rows of
 {head_view}
 
     """
-    python_respone = extract_code_from_llm(query_llm_gpt35(user_prompt).content)
+    python_respone = extract_code_from_llm(query_llm_gpt4(user_prompt).content)
 
     return python_respone
 
@@ -107,7 +107,7 @@ Prefer to use move_range() function if the user asks to move columns.
 ONLY RETURN CODE AS OUTPUTS, NO NEED FOR EXPLANATIONS.
     """
 
-    reviewed_code_response = extract_code_from_llm(query_llm_gpt35(user_prompt).content)
+    reviewed_code_response = extract_code_from_llm(query_llm_gpt4(user_prompt).content)
 
     return reviewed_code_response
 
