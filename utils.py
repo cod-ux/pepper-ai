@@ -61,7 +61,7 @@ def query_llm_gpt35(user_msg, client=client):
     )
 
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4o",
         messages=messages
     ).choices[0].message
 

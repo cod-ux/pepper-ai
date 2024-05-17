@@ -13,7 +13,7 @@ from langchain_openai.embeddings import OpenAIEmbeddings
 from phoenix.trace.openai import OpenAIInstrumentor
 import phoenix as px
 
-from PoC_v3 import (
+from code_agents import (
     create_plan,
     generate_code,
     review_code,
