@@ -24,13 +24,14 @@ A web app to clean & prepare your excel data for analysis faster by manipulating
 ## Coding Plan
 1. Add unmerge functionality before laoding. (d)
 2. Add undo button & functionality, by maintaining list of states as binary files in main page code. (d)
-3. Add export button + save buttons & functionality. (d)
-4. Add LLM agents to 'explore' dataset. (t)
-5. Add buttons and write history of messages for explore & manipulate modes.
-6. Create planning graph, code generation graph for manipulate.
-7. Create planning graph, code generation graph for explore.
+3. Add export button + save button functionality + record chat messages. (d)
+4. Add LLM agents to 'explore' datasets without UI.
+5. Create planning graph, code generation graph for manipulate.
+6. Create planning graph, code generation graph for explore.
+7. Figure everything out with streamlit UI after backend work is complete 100%.
 
 ## Goals list
-1. Fully functional app with explore & manipulate with LLM agents only.
-2. Fully functional app with Langgraph implementation for cycles.
-3. Fully functional app with chain-of-thought past iteration history.
+1. Fully functional app with explore & manipulate with LLM agents only without UI.
+2. Fully functional app with Langgraph implementation for cycles without UI.
+3. Fully functional app with chain-of-thought past iteration history without UI.
+4. Fully functional app with UI.
