@@ -26,7 +26,7 @@ A web app to clean & prepare your excel data for analysis faster by manipulating
 2. Add undo button & functionality, by maintaining list of states as binary files in main page code. (d)
 3. Add export button + save buttons & functionality. (d)
 4. Add LLM agents to 'explore' dataset. (t)
-5. Add buttons and write to history of messages for explore & manipulate modes.
+5. Add buttons and write history of messages for explore & manipulate modes.
 6. Create planning graph, code generation graph for manipulate.
 7. Create planning graph, code generation graph for explore.
 
