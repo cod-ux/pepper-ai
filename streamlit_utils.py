@@ -12,7 +12,6 @@ def copy_excel_locally(file):
     original_path = os.path.join("/Users/suryaganesan/vscode/ml/projects/reporter/", old_fname)
     with open(file_root, "wb") as local_file:
         local_file.write(file.read())
-    st.success(f"File saved as {new_fname}")
 
     file_path = f"/Users/suryaganesan/vscode/ml/projects/reporter/uploads/{new_fname}"
 
