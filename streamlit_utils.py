@@ -2,6 +2,7 @@ import os
 import xlwings as xl
 import streamlit as st
 import pandas as pd
+from openpyxl import load_workbook
 
 def copy_excel_locally(file):
     fname, ext = os.path.splitext(file.name)
@@ -69,3 +70,34 @@ def save_sheets(path):
     book.close()
     app.kill()
     return True
+
+def unmerge_sheets(file_path):
+    book = load_workbook(file_path)
+    for sheet in book.sheetnames:
+        ws = book[sheet]
+        for merged_range in list(ws.merged_cells.ranges):
+            if merged_range in list(ws.merged_cells.ranges):
+                ws.unmerge_cells(str(merged_range))
+                print("Merged Range: ", merged_range)
+
+    book.save(file_path)
+    book.close()
+
+def get_binary(file_path):
+    with open(file_path, "rb") as f:
+        bn = f.read()
+        
+    return bn
+
+def undo(file_path):
+    try:
+        last_state = st.session_state.state_stack.pop()
+        if last_state:
+            with open(file_path, "wb") as f:
+                f.write(last_state)
+
+            st.cache_data.clear()
+
+    except Exception as e:
+        print("Error with undo action: ", e)
+        return

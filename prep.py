@@ -1,10 +1,7 @@
-import os
-import time
-
 import streamlit as st
-from st_aggrid import AgGrid
 import pandas as pd
 from openpyxl import load_workbook
+import os
 
 import xlwings as xl
 
@@ -15,7 +12,7 @@ from code_agents import (
     refresh_code
 )
 
-from streamlit_utils import copy_excel_locally, save_sheets, load_sheets_to_dfs, handle_duplicate_columns
+from streamlit_utils import copy_excel_locally, save_sheets, load_sheets_to_dfs, unmerge_sheets, get_binary, undo
 
 
 header_ph = st.empty()
@@ -39,16 +36,14 @@ if "file_path" not in st.session_state:
 if "cache_clear" not in st.session_state:
     st.session_state.cache_clear = False
 
-
-def sheet_choice_01(sheets_list):
-    return st.sidebar.selectbox(
-        "Select sheet",
-        sheets_list
-    )
+if "state_stack" not in st.session_state:
+    st.session_state.state_stack = [] # binaries of excels
 
 
 def main():
     global cache_clear
+
+# Upload excel
 
     with uploader_ph.container():
        uploaded_file = st.file_uploader("Upload Excel file", type=["xlsx", "xls"])
@@ -59,11 +54,15 @@ def main():
     if uploaded_file is not None:
         if st.session_state.file_path is None:
             file_path = copy_excel_locally(uploaded_file)
+            unmerge_sheets(file_path)
             st.session_state.file_path = file_path
+            st.session_state.state_stack.append(get_binary(st.session_state.file_path))
+            
 
-#      if st.session_state.file_path is not None:
-        # Save excel file
-        st.markdown("<h4>Current State: </h4>", unsafe_allow_html=True)
+# User Interface:
+#     Table view
+
+        st.markdown("<h4>Table view: </h4>", unsafe_allow_html=True)
         st.sidebar.title("Excel sheets")
         
         dfs, sheets = load_sheets_to_dfs(st.session_state.file_path)
@@ -72,11 +71,12 @@ def main():
 
         current_sheet = select_sheet_ph.radio("Select sheets", sheets)
 
-        # Display current state
         current_table_placeholder = st.empty()
 
         with current_table_placeholder.container():
             st.dataframe(dfs[sheets.index(current_sheet)])
+
+#     Chat box
 
         request = st.chat_input("Enter your command...")
         
@@ -85,10 +85,13 @@ def main():
             with st.chat_message("human"):
                 st.write(request)
 
+#     Command execution
+
         if st.session_state.messages[-1]["role"] != "ai":
             if request:
                 with st.chat_message("ai"):
                   if request != "quit":
+                    st.session_state.state_stack.append(get_binary(st.session_state.file_path))
                     test = save_sheets(st.session_state.file_path)
                     st.write(f"Saving and closing sheet: {test}")
                     st.write("Creating a plan...")
@@ -145,36 +148,47 @@ def main():
                     
                     cache_clear = True
 
+# Post execution
+
     if cache_clear:
-                  st.sidebar.empty()
-                  st.cache_data.clear()
-                  current_sheet = None
+        
+        st.sidebar.empty()
+        st.cache_data.clear()
+        current_sheet = None
 
-                  with st.chat_message("ai"):
-                    st.write("Cache data should be cleared")
+        with st.chat_message("ai"):
+           st.write("Cache data should be cleared")
 
-                  dfs, sheets = load_sheets_to_dfs(st.session_state.file_path)
+        dfs, sheets = load_sheets_to_dfs(st.session_state.file_path)
 
-                  print(dfs[0])
-                  print(st.session_state.file_path)
+        print(dfs[0])
+        print(st.session_state.file_path)
 
-                  current_table_placeholder.empty()
-                  select_sheet_ph.empty()
+        current_table_placeholder.empty()
+        select_sheet_ph.empty()
 
 
-                  current_sheet = st.empty()
+        current_sheet = st.empty()
                 
-                  current_sheet = select_sheet_ph.radio("Select sheet",sheets)
+        current_sheet = select_sheet_ph.radio("Select sheet",sheets)
 
-                  with current_table_placeholder.container():
-                      st.dataframe(dfs[sheets.index(current_sheet)])
+        with current_table_placeholder.container():
+            st.dataframe(dfs[sheets.index(current_sheet)])
 
-                  cache_clear = False
+        cache_clear = False
 
+# side bar    
+    if st.session_state.file_path:
+        if os.path.exists(st.session_state.file_path):
+            st.sidebar.button("Undo", on_click=lambda: undo(st.session_state.file_path))
+            st.sidebar.download_button(
+                label = "Export",
+                data = get_binary(st.session_state.file_path),
+                file_name = os.path.basename(st.session_state.file_path),
+                mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+            )
                   
 
 if __name__ == "__main__":
     cache_clear = False
     main()
-
-# If encountered error, use saved intermediate steps to continue
