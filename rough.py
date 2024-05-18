@@ -21,29 +21,21 @@ from langchain_core.prompts import ChatPromptTemplate
 from langgraph.graph import StateGraph, END
 from langchain_core.messages import HumanMessage
 
+from agent_templates import plan_agent_template
+
 # setup
 
 secrets = "/Users/suryaganesan/Documents/GitHub/Replicate/secrets.toml"
 github_secrets = "secrets.toml"
 
-os.environ["OPENAI_API_KEY"] = toml.load(github_secrets)["OPENAI_API_KEY"]
-os.environ["TAVILY_API_KEY"] = toml.load(github_secrets)["TAVILY_API_KEY"]
+os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
+os.environ["TAVILY_API_KEY"] = toml.load(secrets)["TAVILY_API_KEY"]
 
 session = px.launch_app()
 LangChainInstrumentor().instrument()
 
 
-# Define tools
-
-
-
 print("....Finished setting up")
-
-# Define execution agent
-
-llm = ChatOpenAI(model="gpt-4o", streaming=True)
-
-print("Defining State, Plan....")
 
 # Define state
 
@@ -51,126 +43,43 @@ class GraphState(TypedDict):
     input: str
     plan: List[str]
     past_steps: Annotated[List[Tuple], operator.add]
+    source_path: str
     response: str
 
-# Define Planner
+
+# Define Planner utilities
 
 class Plan(BaseModel):
     steps: List[str] = Field(
         description="different steps to follow should be in sorted order"
         )
 
-planner_prompt = ChatPromptTemplate.from_template(
-    """For the given objective, come up with a simple step by step plan. \
-This plan should involve individual takss, that if executed should yeild to the correct answer. Do not add any superfluous steps. \
-The result of the final step should be the final answer. Make sure that each step has all the information needed - do not skip steps.
-
-{objective}"""
-)
+planner_prompt = ChatPromptTemplate.from_template("""{template}""")
 
 planner = create_structured_output_runnable(Plan, ChatOpenAI(model="gpt-4o", temperature=0, streaming=True), planner_prompt)
 
-class Response(BaseModel):
-    response: str
-
-replanner_prompt = ChatPromptTemplate.from_template(
-    """For the given objective, come up with a simple step by step plan. \
-This plan should involve individual tasks, that if executed correctly will yield the correct answer. Do not add any superfluous steps. \
-The result of the final step should be the final answer. Make sure that each step has all the information needed - do not skip steps.
-
-Your objective was this:
-{input}
-
-Your original plan was this:
-{plan}
-
-You have currently done the following steps:
-{past_steps}
-
-Update your plan accordingly. If there are no more steps needed and you can retrun to the user, then respond with that. Otherwise fill out the plan. Only add steps to the plan that still NEED to be done. Do not return previously done steps as part of the plan."""
-)
-
-replanner = create_openai_fn_runnable(
-    [Plan, Response], 
-    ChatOpenAI(model="gpt-4-turbo-preview", temperature=0, streaming=True),
-    replanner_prompt,
-    )
-
-# Create Graph
-
-print("Defining Graph functions....")
-
-async def execute_step(state: GraphState):
-    print("\nExecution agent begins...\n")
-    task = state["plan"][0]
-    print(f"Task retrieved: {task}")
-    agent_response = await agent_executor.ainvoke({"input": task, "chat_history": []})
-    print(f"Agent response recieved: {agent_response}")
-
-    return {
-        "past_steps": (task, agent_response["agent_outcome"].return_values["output"])
-    }
-
-async def plan_step(state: GraphState):
+def plan_step(state):
     print("\nPlanning step begins...\n")
-    plan = await planner.ainvoke({"objective": state["input"]})
+    plan = planner.invoke({"template": plan_agent_template(state["input"], state["source_path"])})
     print("Planning step: ")
     return {"plan": plan.steps}
 
-async def replan_step(state: GraphState):
-    print("\nReplanning step begins...\n")
-    output = await replanner.ainvoke(state)
-    if isinstance(output, Response):
-        return {"response": output.response}
-    else:
-        return {"plan": output.steps}
+def generate_code(state):
+    pass
 
-def should_end(state: GraphState):
-    print("\nChecking if program should end...\n")
-    if "response" in state and state["response"]:
-        return "True"
-    else:
-        return "False"
+def check_code(state):
+    pass
 
-# The Graph
+def reflect(state):
+    pass
 
-print("Creating the Graph....")
+def replan_step(state):
+    pass
 
-workflow = StateGraph(GraphState)
+state = {
+    "input": "How many empty spaces are there in each excel sheet?", 
+    "source_path": "/Users/suryaganesan/vscode/ml/projects/reporter/pivot.xlsx"
+}
 
-workflow.add_node("Executor", execute_step)
-workflow.add_node("Planner", plan_step)
-workflow.add_node("Replanner", replan_step)
-
-workflow.set_entry_point("Planner")
-
-workflow.add_edge("Planner", "Executor")
-workflow.add_edge("Executor", "Replanner")
-
-workflow.add_conditional_edges(
-    "Replanner",
-    should_end,
-    {
-        "True": END,
-        "False": "Executor"
-    }
-)
-
-print("Compiling the Graph....")
-
-app = workflow.compile()
-
-# Use it!
-
-print("Executing request....\n\n")
-
-config = {"recursion_limit": 25}
-inputs = {"input": "How old was the queen Elizabeth of England when she died and How long was she queen?"}
-
-async def main():
-  async for event in app.astream(inputs, config=config):
-        for key, value in event.items():
-            if key != "__end__":
-                print(value)
-
-asyncio.run(main())
+response = plan_step(state=state)
+print(response)
