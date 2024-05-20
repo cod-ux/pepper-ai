@@ -14,17 +14,11 @@ from utils import (
 
 from langchain.vectorstores.faiss import FAISS
 from langchain_openai.embeddings import OpenAIEmbeddings
+from langchain_core.prompts import ChatPromptTemplate
 
 
-# Setup
-
-source = "sales_data_sample.xlsx"
-source_path = "sales_data_sample.xlsx"
 secrets = "/Users/suryaganesan/Documents/GitHub/Replicate/secrets.toml"
-
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
-
-client = OpenAI()
 
 
 # Code docs RAG
@@ -33,7 +27,7 @@ embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
 path = "/Users/suryaganesan/vscode/ml/projects/reporter/faiss_index"
 db = FAISS.load_local(path, embeddings, allow_dangerous_deserialization=True)
 
-retriever = db.as_retriever(search_kwargs={"k": 1})
+retriever = db.as_retriever(search_kwargs={"k": 2}, )
 
 def plan_agent_template(request, source):
     #code_example = retriever.invoke(f"Find a python code example relating to: {request}")[0].page_content
@@ -50,8 +44,8 @@ The result of the final step should be the final answer. Make sure that each ste
 
 Objective:
 ------------
-The user wants to do the following to their excel file called {source}: {request}.
-finally save the file under the same name: {source}
+The user wants to do the following to their excel file called {source}: {request}. \n
+Finally save the file under the same name: {source}
 
 There are {len(dfs)} sheets in the excel file. Here is how the first few rows of those sheets look like:
 {head_view}
@@ -59,6 +53,40 @@ There are {len(dfs)} sheets in the excel file. Here is how the first few rows of
 """
 
     return user_prompt
+
+
+
+def retrieve_context(request, retriever=retriever):
+    code_examples = retriever.invoke(f"Documentation related to : {request}")
+    content = [doc.page_content for doc in code_examples]
+    seperator = "\n\n\n-----\n\n\n"
+    conc_content = seperator.join(content)
+
+    return conc_content
+
+def code_gen_template(request):
+
+    context = retrieve_context(request=request)
+
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            (
+                'system',
+                f"""You are a coding assistant with expertise in Python's openpyxl module.\n
+                Here is a set of openpyxl documentation: \n --------- \n {context} \n --------- \n Answer the user question
+                based on the above provided documentation. Ensure that any code you provie can be executed \n
+                with all required imports and variables defined. Structure your answer with a description of the conde solution. \n
+                Then list the imports. And finally list the functioning code block. Always save the final output with the full source path name under the same name given in the plan. \n
+                Here is the user's request and a plan to follow to fulfill the user request: """
+            ),
+            (
+                'placeholder',
+                '{messages}'
+            )
+        ]
+    )
+
+    return prompt
 
 
 def generate_code(request, source, plan):
