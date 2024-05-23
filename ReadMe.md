@@ -35,3 +35,8 @@ A web app to clean & prepare your excel data for analysis faster by manipulating
 2. Fully functional app with Langgraph implementation for cycles without UI.
 3. Fully functional app with chain-of-thought past iteration history without UI.
 4. Fully functional app with UI.
+
+## Next steps
+1. Make plan step decide if execution should be multi-step and provide list of steps to execute.
+2. Make plan and generate code and execute each step.
+3. Make plan, execute each step, fix errors and replan to achieve goal, with graph.

@@ -15,7 +15,8 @@ os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 
 client = OpenAI()
 
-
+pd.set_option('display.max_columns', None)
+pd.set_option('display.expand_frame_repr', False)
 
 def query_llm_gpt4(user_msg, client=client):
     system_msg = f"""You are an AI python programmer. You are adept in writing and reviewing code. Assume that openpyxl library is already installed when writing code.
