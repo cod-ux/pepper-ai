@@ -40,3 +40,76 @@ A web app to clean & prepare your excel data for analysis faster by manipulating
 1. Make plan step decide if execution should be multi-step and provide list of steps to execute.
 2. Make plan and generate code and execute each step.
 3. Make plan, execute each step, fix errors and replan to achieve goal, with graph.
+
+## Tracking
+
+Exp 1: Add the entire prompt to one message
+
+Result: Did not work, still made a multi-step plan for a simple request
+
+Exp 2: Change the propmt to identify tasks instead of make a plan.
+
+Result: Tasks are more accurate and works.
+Challenge: Individual tasks are some time exploratory and provide some answers for the next step to use, 
+but since the generated code is dynamically executed, there isn't a way to add the exploration script's response to the messages.
+
+Exp 3: Ask the generated code to always return a response with the same variable name to extract and add to messages if the response is not None.
+Implementation: 
+1. Planner needs to run on messages not template, and messages variable should be used from state class. (done)
+2. Generated code should be asked to: Save file with the same source file_name and return a response variable with the same name.
+3. Response needs to be added to messages by checking if there is a response every time code is executed
+
+Challenge in 3-1: planner template encounters some error when loading template from {template function}
+Solution: Creating a planner object from llms newly every time planner node is called. Need to check if this is time consuming.
+
+Challenge 3-2: First loop runs well, but adding to the messages seems to pop an error when the second loop starts.
+Solution: Needed to create the code gen chain only once and not multiple times
+
+Challenge 3-3: We want the user request to be correctly executed in the final step. To do that we were thinking of
+breaking the request to list of tasks, then execute each task individually. Hoping that executing step by step would result in
+minimal errors. But this requires viewing the new state of the excel after each step. Instead would be accurate if we just, iteratively
+add code adn executing only in the end?
+Trial solution: At each task take the code solution so far, mentioning the tasks it achieves and provide a new task to add to the
+existing code. And when there is no more tasks left to complete, execute the code.
+
+Rewriting Exp 3: Make the flow such that at each step code is added iteratively to each task and executed at the end when the
+list is exhausted.
+
+Implementation: 
+1. No change to planner (done)
+2. Stop messages from adding sheet views at every step. (done)
+3. First message after planning should be include list of tasks. (done)
+4. Need to maintain a variable for past_code_steps. (done)
+5. After exec each task, add message to say here are the steps coded. (done)
+6. Before exec each task, Add here is the task that needs to be added to the code. (done)
+
+7. Ask the code to return a response object with the same variable name in the end, to check if the function was executed successfully or what the error was.
+But would that be necessary? What if we just executed and figured what the mistake was ourselves? This would probably help debugging a lot.
+But still, I'll have to ask the LLM to include try statements everywhere and ask it to write and return code that is easily debuggable.
+But again, I can still ask it to write debuggable code with a lot of try statements, so that the error can be specified.
+Preferably for simplicity, we do not include try statements inside and catch adn use the error only when we execute the code.
+The alternative would be to ask the LLM return a response object, describing the problem when an expected error is thrown. 
+Which will be used for debugging the code better.
+We're gonna choose simple and just use the error that may be caught during dynamic execution itself. Cuz the alternative is a lot of work and complexity.
+Cancelled step 7.
+
+Solution: Created an iterative coding process where an additional task is completed at each step to produce the final code
+that achieves all tasks.
+
+Exp 4: Add a try statement to execute the imports and code blocks. And the functionality to restart the generation process
+one additional time to correct the error.
+
+Implementation:
+1. Add try statements and returning the error to the state variable error. (done)
+2. Add error variable to messages if caught. (done)
+
+Exp 5: Make the Graph to add nodes - plan, generate, check & reflect, should end
+
+Implementation:
+(Make a graph first)
+1. Add check code to graph. (D1)
+2. Add should end to graph. (D1)
+3. Add reflect to graph. (D1)
+4. Make a quick CLI to use the graph app for multiple requests on the same file. (D1)
+5. Maintain steps executed so far + code solutions. Pass the last 5 requests + solutions to planner for creating future plans. (D1)
+6. Include past executed requests + code solutions from streamlit's session state when making future plans for requests. (Day 3)
