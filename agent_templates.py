@@ -4,6 +4,9 @@ import json
 
 from openpyxl import load_workbook
 from openai import OpenAI
+from langchain.vectorstores.faiss import FAISS
+from langchain_openai.embeddings import OpenAIEmbeddings
+from langchain_core.prompts import ChatPromptTemplate
 
 from utils import (
     query_llm_gpt4,
@@ -12,34 +15,33 @@ from utils import (
     load_sheets_to_dfs
 )
 
-from langchain.vectorstores.faiss import FAISS
-from langchain_openai.embeddings import OpenAIEmbeddings
-from langchain_core.prompts import ChatPromptTemplate
+
 
 secrets = "/Users/suryaganesan/Documents/GitHub/Replicate/secrets.toml"
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 
-
-# Code docs RAG
-
+"""
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
 path = "/Users/suryaganesan/vscode/ml/projects/reporter/faiss_index"
 db = FAISS.load_local(path, embeddings, allow_dangerous_deserialization=True)
 
-retriever = db.as_retriever(search_kwargs={"k": 2}, )
+retriever = db.as_retriever(search_kwargs={"k": 2}, )"""
 
 
 def planner_template():
 
-    system_msg = f"""You are an intelligent assistant that identifies individual tasks needed to fulfill user requests for manipulating Excel files. Your task is to analyze the user's request and break it down into executable tasks. Follow these guidelines:
+    system_msg = f"""
+You are an intelligent assistant that identifies individual tasks that needs to be fulfilled to execute the user request that involve manipulating Excel files. \n
+Your task is to analyze the user's request and break it down into executable tasks. Follow these guidelines:
 
 Simple Requests: If the user request is straightforward and can be achieved with a single task, provide only one task.
 
 Example: For a request like "Create a new column at the end by copying the last column and pasting it again," you would return:
-"Copy the last column and paste it at the end of the table."
-Complex Requests: If the user request is more complex and requires multiple tasks to achieve the desired outcome, provide a detailed list of tasks.
+"Copy the last column and paste it at the end of the table."\n
 
+Complex Requests: If the user request is more complex and requires multiple tasks to achieve the desired outcome, provide a detailed list of tasks.
 Each task should be clear, actionable, and logically sequenced.
+
 Example: For a request like "Create a new column by using VLOOKUP formula and look up the sale value information from Sheet2 based on opportunity ID column in both sheets," you might return:
 "Identify the opportunity ID column in both Sheet1 and Sheet2."
 "Insert a new column in Sheet1 where the VLOOKUP formula will be applied."
@@ -76,18 +78,16 @@ def format_request(request, source):
 The user wants to execute their request on this excel file called: {source}.\n
 
 ------------
-
 There are {len(dfs)} sheets in the excel file. Here is how the first few rows of those sheets look like:
 {head_view}
-
 ------------
 
-Here is the user request: {request}"""
+User request: {request}"""
 
     return formatted
 
 
-def retrieve_context(request, retriever=retriever):
+def retrieve_context(request, retriever):
     code_examples = retriever.invoke(f"Documentation related to : {request}")
     content = [doc.page_content for doc in code_examples]
     seperator = "\n\n\n-----\n\n\n"
@@ -95,7 +95,7 @@ def retrieve_context(request, retriever=retriever):
 
     return conc_content
 
-def code_gen_template():
+def code_chain_template():
 
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -103,7 +103,7 @@ def code_gen_template():
                 'system',
                 """You are a coding assistant with expertise in Python's openpyxl module.\n
 Fulfill the user request \n
-by writing code for executing every task that needs to be completed to achieve the end user request . Ensure that any code you provie can be executed \n
+by writing code for executing tasks that needs to be completed to achieve the end user request . Ensure that any code you provie can be executed \n
 with all required imports and variables defined. Structure your response with a description of the code solution. \n
 Then list the imports. And finally list the functioning code block. Always save the final output with the full source path name under the same name given in the plan when you make changes. \n
 Here is the user's original request, progress on executing previous tasks, and the current task you need to write code to execute. Write code to execute the last retrieved task from the plan: """
@@ -118,22 +118,16 @@ Here is the user's original request, progress on executing previous tasks, and t
     return prompt
 
 
-def format_code_request(request, source, task_to_be_executed):
-    dfs, sheet_names = load_sheets_to_dfs(source)
-    head_view = ''
-
-    for i, df in enumerate(dfs):
-        head_view += f"\nSheet {i}: {sheet_names[i]}\nSheet head:\n{df.head(3)}\n\n"
+def format_code_request(task_to_be_executed):
 
     formatted = f"""
-Here is the next task you need to write code for to execute the user request: {task_to_be_executed}
-Rewrite the previous code to also additionally execute the new task given to you. Make sure to use the entire source file path name as provided to save the file.\n
-And do not use any dummy variables in your code. Make the code isready to execute.
+This is the current task I need to write code for executing the user request: {task_to_be_executed}\n
+
+If there is any previous code then I need to rewrite it for it to execute the new additional task given to me. I need to make sure to use the entire source file path name as provided in previous messages to save the file.\n
+And I should not use any dummy variables in the code. The code should be readily executable.
 """
 
     return formatted
-
-
 
 
 

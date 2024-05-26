@@ -15,7 +15,7 @@ from langchain_core.prompts import ChatPromptTemplate
 
 from langgraph.graph import StateGraph, END
 
-from agent_templates import planner_template, format_request, format_code_request, code_gen_template, retrieve_context
+from agent_templates import planner_template, format_request, format_code_request, code_chain_template, retrieve_context
 
 
 # setup
@@ -59,7 +59,7 @@ class code(BaseModel):
     description = "Schema for code solutions to execute openpyxl related user requests"
 
 
-prompt = code_gen_template() # Retrieved and added context docs in prompt template
+prompt = code_chain_template() # Retrieved and added context docs in prompt template
 code_chain = prompt | llm.with_structured_output(code)
 
 # Function: Plan task

@@ -103,13 +103,27 @@ Implementation:
 1. Add try statements and returning the error to the state variable error. (done)
 2. Add error variable to messages if caught. (done)
 
-Exp 5: Make the Graph to add nodes - plan, generate, check & reflect, should end
+Exp 5: Figure out how to charge users
+
+Challenge: Can't accept payments to my name or account as I'm on a student visa
+Trial Solution: Create a paypal business account for an Indivual business owner in India and work for them to promote their business.
+Not going to get IEC code because I'm only allowing pre-order and free trial and charging a one-time fee of £0.
+
+Exp 6: Make the Graph to add nodes - plan, generate, check & reflect, should end.
 
 Implementation:
 (Make a graph first)
-1. Add check code to graph. (D1)
-2. Add should end to graph. (D1)
-3. Add reflect to graph. (D1)
-4. Make a quick CLI to use the graph app for multiple requests on the same file. (D1)
-5. Maintain steps executed so far + code solutions. Pass the last 5 requests + solutions to planner for creating future plans. (D1)
-6. Include past executed requests + code solutions from streamlit's session state when making future plans for requests. (Day 3)
+1. Add check code to graph. (done)
+2. Add should end to graph. (done)
+3. Add reflect to graph. (done)
+4. Make responses print asynchronously. (done)
+5. Maintain steps executed so far + code solutions.(done)
+6. Make a quick CLI to test the graph app against differet requests (D2)
+7. Include past 5 executed requests + code solutions from streamlit's session state when making future plans for requests. (D2)
+8. Make generation messages short term, remove them after final script is generated. (D2)
+9. Make a Langgraph app to explore and answer questions about a dataset. (D3)
+
+10. Use Langgraph app to generate scripts. (D4)
+11. Stream Langgraph sys messages to streamlit. (D4)
+12. Make RAG bot for documentation. (D4)
+

@@ -255,7 +255,7 @@ formatted_req = format_request(req, source)
  
 #response = app.invoke({"messages": [('user', formatted_req)], "request": req, "source_path": source, "max_iterations": 30, "iterations": 0})
 
-
+"""
 inputs = {"messages": [('user', formatted_req)], "request": req, "source_path": source, "max_iterations": 30, "iterations": 0}
 
 async def main(inputs=inputs):
@@ -267,6 +267,5 @@ async def main(inputs=inputs):
 asyncio.run(main())
 
 print("\n......App ends work here.\n")
-
-end_in = input("Successfully compiled. Quit?...")
+"""
 

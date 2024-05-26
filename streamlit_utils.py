@@ -4,6 +4,11 @@ import streamlit as st
 import pandas as pd
 from openpyxl import load_workbook
 
+def re_upload():
+    st.session_state.uploaded_file = None
+    st.session_state.file_path = None
+    st.cache_data.clear()
+
 def copy_excel_locally(file):
     fname, ext = os.path.splitext(file.name)
     new_fname = f"{fname}_copy{ext}"
