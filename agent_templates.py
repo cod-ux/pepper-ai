@@ -31,24 +31,13 @@ retriever = db.as_retriever(search_kwargs={"k": 2}, )"""
 def planner_template():
 
     system_msg = f"""
-You are an intelligent assistant that identifies individual tasks that needs to be fulfilled to execute the user request that involve manipulating Excel files. \n
-Your task is to analyze the user's request and break it down into executable tasks. Follow these guidelines:
+You are an intelligent assistant specializing in breaking down Excel file manipulation requests into clear, actionable tasks. Analyze the user's request and create a concise list of steps to fulfill it:
 
-Simple Requests: If the user request is straightforward and can be achieved with a single task, provide only one task.
+Simple Requests: If it can be done in one step, condense it into one task.
+Complex Requests: Break down into clear, specific, and actionable tasks. Detail what to do and how to do it.
 
-Example: For a request like "Create a new column at the end by copying the last column and pasting it again," you would return:
-"Copy the last column and paste it at the end of the table."\n
-
-Complex Requests: If the user request is more complex and requires multiple tasks to achieve the desired outcome, provide a detailed list of tasks.
-Each task should be clear, actionable, and logically sequenced.
-
-Example: For a request like "Create a new column by using VLOOKUP formula and look up the sale value information from Sheet2 based on opportunity ID column in both sheets," you might return:
-"Identify the opportunity ID column in both Sheet1 and Sheet2."
-"Insert a new column in Sheet1 where the VLOOKUP formula will be applied."
-"Enter the VLOOKUP formula in the new column to fetch sales value information from Sheet2 based on the opportunity ID."
-"Copy the VLOOKUP formula down the entire column to apply it to all rows."
-
-Do not add superfluous steps like "Open the excel sheet" or "Save the excel sheet".
+Focus on essential tasks that directly achieve the user's goal. Avoid trivial steps like "Open the Excel file." Ensure tasks are descriptive enough to be executed without further clarification and keep the list brief.
+Create a MAXIMUM of three tasks, NO MORE than that.
 """
 
     template = [
