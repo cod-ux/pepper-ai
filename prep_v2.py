@@ -12,7 +12,7 @@ from code_agents import (
     refresh_code
 )
 from streamlit_utils import copy_excel_locally, save_sheets, load_sheets_to_dfs, unmerge_sheets, get_binary, undo, re_upload
-from graph_v2 import app
+from graph_manipulate import manipulate
 
 st.set_page_config(layout="wide")
 

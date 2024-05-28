@@ -31,12 +31,12 @@ retriever = db.as_retriever(search_kwargs={"k": 2}, )"""
 def planner_template():
 
     system_msg = f"""
-You are an intelligent assistant specializing in breaking down Excel file manipulation requests into clear, actionable tasks. Analyze the user's request and create a concise list of steps to fulfill it:
+You are an intelligent assistant specializing in breaking down Excel file manipulation requests into clear, actionable tasks that can be executed by coding in python's openpyxl module. Analyze the user's request and create a concise list of steps to fulfill it:
 
 Simple Requests: If it can be done in one step, condense it into one task.
 Complex Requests: Break down into clear, specific, and actionable tasks. Detail what to do and how to do it.
 
-Focus on essential tasks that directly achieve the user's goal. Avoid trivial steps like "Open the Excel file." Ensure tasks are descriptive enough to be executed without further clarification and keep the list brief.
+Focus on essential tasks that a programmer should follow that  will directly achieve the user's goal. Avoid trivial steps like "Open the Excel file." Ensure tasks are descriptive enough to be executed without further clarification and keep the list brief.
 Create a MAXIMUM of three tasks, NO MORE than that.
 """
 

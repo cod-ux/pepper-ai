@@ -3,6 +3,10 @@ import toml
 import asyncio
 import operator
 import pandas as pd
+import streamlit as st
+from io import StringIO
+import sys
+import streamlit as st
 
 from langchain_openai import ChatOpenAI
 from langchain_core.pydantic_v1 import BaseModel, Field
@@ -13,11 +17,11 @@ from langgraph.graph import StateGraph, END
 import phoenix as px
 from phoenix.trace.langchain import LangChainInstrumentor
 from typing import TypedDict, List, Tuple, Annotated
-from agent_templates import (
+from temp_explore import (
     planner_template,
     format_request,
-    format_code_request,
     code_chain_template,
+    data_analyst_template
 )
 
 
@@ -41,7 +45,7 @@ class GraphState(TypedDict):
     source_path: str # Set
     past_execs: List
 
-    tasks: List[str]
+    tasks: str
     past_tasks: List[str]
     current_task: str
     
@@ -56,25 +60,29 @@ class GraphState(TypedDict):
     response: str
 
 class Plan(BaseModel):
-    tasks: List[str] = Field(
+    tasks: str = Field(
         description="List of tasks to complete to fulfill the user request"
         )
 
 class code(BaseModel):
-    imports: str = Field("Code block for import statements in the code")
-    code: str = Field("Code block for the code statement without import statements")
+    prefix: str = Field(description="Description of the problem and approach")
+    imports: str = Field(description="Code block import statements")
+    code: str = Field(description="Code block not including import statements")
     description: str = "Schema for code solutions to execute openpyxl related user requests"
 
+class answer(BaseModel):
+    ans: str = Field("Answer to the provided question")
 
 # Preparing code_chain()
 
-prompt = code_chain_template()
-code_chain = prompt | llm.with_structured_output(code)
-
+code_prompt = code_chain_template()
+code_chain = code_prompt | llm.with_structured_output(code)
+analyst_prompt = data_analyst_template()
+analyst_chain = analyst_prompt | llm.with_structured_output(answer)
 
 # Node functions
 
-async def plan_steps(state: GraphState):
+def plan_steps(state: GraphState):
     messages = state["messages"]
     past_tasks = state["past_tasks"]
     past_execs = state["past_execs"]
@@ -89,18 +97,18 @@ async def plan_steps(state: GraphState):
     if len(past_execs) > 4:
         exec_string = ''
         for execs in past_execs[-4:0]:
-            req = execs["request"]
-            table = execs["table"]
-            exec_string += f"\nPast Request: {req}\nTable: {table}\n"
-        messages += [("system", f"These are the past 4 requests from the user along with a view of how the excel sheet looked like after executing the request: \n{exec_string}")]
+            req = execs["question"]
+            table = execs["answer"]
+            exec_string += f"\nPast Question: {req}\Answer: {table}\n"
+        messages += [("user", f"These are the past 4 questions from me, the user, along with the answers you provided: \n{exec_string}")]
 
     if len(past_execs) < 4:
         exec_string = ''
         for execs in past_execs:
-            req = execs["request"]
-            table = execs["table"]
-            exec_string += f"\nRequest: {req}\nTable: {table}\n"
-        messages += [("system", f"These are the past few requests from the user along with a view of how the excel sheet looked like after executing the request: \n{exec_string}")]
+            req = execs["question"]
+            table = execs["answer"]
+            exec_string += f"\Past Question: {req}\Answer: {table}\n"
+        messages += [("system", f"These are the past few questions from me, the user, along with the answers you provided: \n{exec_string}")]
 
 
     planner_prompt = planner_template()
@@ -108,22 +116,15 @@ async def plan_steps(state: GraphState):
 
     print("\nPlanning step begins...\n")
 
-    plan = await planner.ainvoke({"messages": messages})
-    print(f"Planning step: \n, {plan.tasks}")
-    plan_string = ''
+    plan = planner.invoke({"messages": messages})
 
-    for i, task in enumerate(plan):
-        plan_string += f'\n Task {i}: {task}'
-
-    print(plan_string)
-
-    messages += [('system', f"For the user request, this is the list of tasks I need to achieve to fulfill the request: \n{plan_string}")]
+    messages += [('system', f"For the user questions, this is the list of tasks I need to complete to find the answer: \n{plan.tasks}")]
     
-    return {"tasks": plan.tasks, "messages": messages, "past_tasks": past_tasks, "reflect": reflect}
+    return {"tasks": plan.tasks, "messages": messages, "past_tasks": past_tasks, "reflect": reflect, "current_task": f"Plan completed..."}
 
 # Function: Write code
 
-async def generate_code(state: GraphState):
+def generate_code(state: GraphState):
     messages = state["messages"]
     iterations = state["iterations"]
     error = state["error"]
@@ -131,32 +132,15 @@ async def generate_code(state: GraphState):
     tasks = state["tasks"]
     past_tasks = state["past_tasks"]
 
-    plan_string = ''
-
-    for i, task in enumerate(tasks):
-        plan_string += f'\n Task {i}: {task}'
-
     print("Generating code....")
 
     if error == "yes":
-        messages += [("system", f"Now I should try again to generate code with the newly written plan that wouldn't produce any errors during execution, in case the error was due to the written code. This is the plan to follow: \n{plan_string}")]
+        messages += [("system", f"Now I should try again to generate code with the newly written plan that wouldn't produce any errors during execution, in case the error was due to the written code. If the error produced was not because of the code, I will use the same code. This is the plan to follow: \n{tasks}")]
 
-    for count, task in enumerate(tasks):
+    messages += [("user", "Follow every step of the plan to write a readily executable program that provides the answer to the user question.")]
+    generation = code_chain.invoke({"messages": messages})
 
-        print(f"\nCoding: {count}. {task}\n")
-        code_request = format_code_request(task_to_be_executed=task)
-
-        messages += [('system', f'{code_request}')]
-
-        generation = await code_chain.ainvoke({"messages": messages})
-        past_tasks += [f'{count}. {task}']
-        past_tasks_string = ''
-
-        for i, task in enumerate(past_tasks):
-            past_tasks_string += f'\n Task {i}: {task}'
-
-        messages += [("system", f"The last added step to the code was: {task}. \nThe Code solution so far is: \n{generation.imports} \n {generation.code}")]
-        messages += [('system', f"So far the code written will be able to complete the following tasks from the plan: \n{past_tasks_string}")]
+    messages += [('system', f"This is the code solution written based ont the plan to answer the user question:\n{generation.imports}\n{generation.code}")]
 
     iterations += 1
     print("Reached end of generation...")
@@ -164,15 +148,16 @@ async def generate_code(state: GraphState):
     #last_msgs = messages[-2:]
     #last_indx = -2*len(task)
     #messages = messages[:last_indx] + last_msgs
-    return {"generation": generation, "messages": messages, "iterations": iterations}
+    return {"generation": generation, "messages": messages, "iterations": iterations, "current_task": "Executing code..."}
 
-async def check_code(state: GraphState):
-    print("Code is being checked....")
+def check_code(state: GraphState):
+    print("Code is being executed....\n--------\n")
     messages = state["messages"]
     generation = state["generation"]
     error = state["error"]
     iterations = state["iterations"]
     reflect = state["reflect"]
+    response = ["response"]
 
     try:
         exec(generation.imports)
@@ -182,7 +167,10 @@ async def check_code(state: GraphState):
         messages += [("system", f"Encountered an error with import statement: {e}")]
 
         print(f"Error with import statement: {e}")
-        return {"error": error, "messages": messages}
+        return {"error": error, "messages": messages, "current_task": "An error has occured. Retrying Solution..."}
+
+    captured_output = StringIO()
+    sys.stdout = captured_output
 
     try:
         exec(generation.code)
@@ -192,17 +180,24 @@ async def check_code(state: GraphState):
         messages += [("system", f"Encountered an error with code block statement: {e}")]
 
         print(f"Error with code block: {e}")
-        return {"error": error, "messages": messages}
+        return {"error": error, "messages": messages, "current_task": "An error has occured. Retrying Solution..."}
+
+    captured_output = captured_output.getvalue()
+    sys.stdout = sys.__stdout__
+
+    response = captured_output
+    messages += [("system", f"Observation: {response}")]
 
     error = "no"
+    print("\n--------\n")
 
     if iterations > 2:
         reflect = "yes"
 
     print("-----NO CODE TEST FAILURES-----")
-    return {"messages": messages, "error": error, "reflect": reflect}
+    return {"messages": messages, "error": error, "reflect": reflect, "response": response, "current_task": "Typing Answer..."}
 
-async def reflect_code(state: GraphState):
+def reflect_code(state: GraphState):
     messages = state["messages"]
 
     messages += [
@@ -215,10 +210,24 @@ async def reflect_code(state: GraphState):
         )
     ]
 
-    reflections = await code_chain.ainvoke({"messages": messages})
+    reflections = code_chain.ainvoke({"messages": messages})
     messages += [("assistant", f"Here are reflections on the error: {reflections}")]
 
     return {"messages": messages}
+
+def write_answer(state: GraphState):
+    messages = state["messages"]
+    response = state["response"]
+    generation = state["generation"]
+
+    result = analyst_chain.invoke({"messages": messages})
+
+    response = result.ans
+    messages += [("system", f"Here is the answer to the user's question: \n{response}")]
+
+    generation_string = f"{generation.imports}\n{generation.code}"
+
+    return {"response": response, "messages": messages, "current_task": "Closing...", "generation": f"{generation_string}"}
 
 
 def should_end(state: GraphState):
@@ -252,6 +261,7 @@ wf.add_node("planner", plan_steps)
 wf.add_node("generate", generate_code)
 wf.add_node("check_code", check_code)
 wf.add_node("reflect_code", reflect_code)
+wf.add_node("write_answer", write_answer)
 
 wf.set_entry_point("planner")
 wf.add_edge("planner", "generate")
@@ -260,14 +270,15 @@ wf.add_conditional_edges(
     "check_code",
     should_end,
     {
-        "end": END,
+        "end": "write_answer",
         "reflect_code": "reflect_code",
         "planner": "planner",
     }
 )
 wf.add_edge("reflect_code", "planner")
+wf.add_edge("write_answer", END)
 
-app = wf.compile()
+explore = wf.compile()
 
 print("\nApp starts work here....\n")
 
@@ -276,20 +287,20 @@ source = '/Users/suryaganesan/vscode/ml/projects/reporter/pivot.xlsx'
 
 
  
-#response = app.invoke({"messages": [('user', formatted_req)], "request": req, "source_path": source, "max_iterations": 30, "iterations": 0})
+#response = app.ainvoke({"messages": [('user', formatted_req)], "request": req, "source_path": source, "max_iterations": 30, "iterations": 0})
 
 
-async def main():
+
+async def main(req):
     df = pd.read_excel(source)
-    print(df.head())
+    print(df.head(7))
     executions = []
-    while True:
-        req = input(">> ")
+    if True:
         formatted_req = format_request(req, source)
         temp = []
 
         inputs = {"messages": [('user', formatted_req)], "request": req, "source_path": source, "max_iterations": 3, "iterations": 0, "past_execs": executions}
-        async for event in app.astream(inputs):
+        async for event in explore.astream(inputs):
             for key, value in event.items():
                 if key != "__END__":
                     print()
@@ -300,10 +311,21 @@ async def main():
         #print("Executions: \n", executions)
         #print("Length of temp: ", len(temp))
         #print("Temp: ", temp)
-        df = pd.read_excel(source)
-        print(df.head())
 
-asyncio.run(main())
+def main_(req):
+    df = pd.read_excel(source)
+    print(df.head(7))
+    executions = []
+    if True:
+        formatted_req = format_request(req, source)
+        temp = []
+
+        inputs = {"messages": [('user', formatted_req)], "request": req, "source_path": source, "max_iterations": 3, "iterations": 0, "past_execs": executions, "response": ""}
+        msg = explore.invoke(inputs)
+
+        return msg
+
+#asyncio.run(main())
 
 print("\n......App ends work here.\n")
 

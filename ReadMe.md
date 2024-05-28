@@ -120,8 +120,8 @@ Implementation:
 5. Maintain steps executed so far + code solutions.(done)
 6. Make a quick CLI to test the graph app against differet requests (D2)
 7. Include past 5 executed requests + code solutions from streamlit's session state when making future plans for requests. (D2)
-8. Make generation messages short term, remove them after final script is generated. (D2)
-9. Make a Langgraph app to explore and answer questions about a dataset. (D3)
+8. Make generation messages short term, remove them after final script is generated. (done)
+9. Make a Langgraph app to explore and answer questions about a dataset. (D3) - Ask the LLM to use st.write for texts and images.
 
 10. Use Langgraph app to generate scripts. (D4)
 11. Stream Langgraph sys messages to streamlit. (D4)
