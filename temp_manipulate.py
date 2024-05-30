@@ -146,56 +146,25 @@ There are {len(dfs)} sheets in the excel file. Here is how the first few rows of
 
     return python_respone
 
-def review_code(request, code_response, source, plan):
-    code_example = retriever.invoke(f"Find a python code example relating to: {request}")[0].page_content
-    
-    user_prompt = f"""
-This was the user request: {request}
 
-This is the code I am going to execute for the excel file called {source}:
-{code_response}
+def data_analyst_template():
+    prompt = ChatPromptTemplate.from_messages(
+        [
+            (
+                'system',
+                """You are a data analyst who understands data analytics and programming, who explains to the user the results of the program being executed to fulfill the user's request based on the history of messages given to you.\n
+Provide a brief response to the user explaining how the system has executed the request and what the result was, \n
+providing a logical and concise answer. Use the file name to indicate the modified file if necessary, but never use the full path of the file.\n
+You don't have inform explicitly that the request has been executed by the system. If there was an error, then you can inform that there was an error, why there was an error and the final status of the execution.
+"""
+            ),
+            (
+                'placeholder',
+                '{messages}'
+            )
+        ]
+    )
 
-Here is the plan used to create this code. Review and if necessary rewrite the code to make sure the code follows the plan as much as possible:
-{plan}
-
-Here is some relevant openpyxl documntation texts. Review and rewrite the code to make sure there are NO errors:
-{code_example}
-
-
-Prefer to write excel formulas instead of doing manual data entry. If there is no error return the original code and save the file as {source}.
-Prefer to use move_range() function if the user asks to move columns.
-ONLY RETURN CODE AS OUTPUTS, NO NEED FOR EXPLANATIONS.
-    """
-
-    reviewed_code_response = extract_code_from_llm(query_llm_gpt4(user_prompt).content)
-
-    return reviewed_code_response
-
-def refresh_code(request, error, source, plan, old_code):
-    code_example = retriever.invoke(f"Find a python code example relating to: {request}")[0].page_content
-    
-    user_prompt = f"""
-This was the user request: {request}
-
-This is the code I tried to execute on the excel file called {source}:
-{old_code}
-
-Here is the plan I wanted to execute to through this code. Review and if necessary rewrite the code to make sure the code follows the plan as much as possible:
-{plan}
-
-Here is some relevant openpyxl documntation texts. Review and rewrite the code to make sure there are NO errors:
-{code_example}
-
-
-Prefer to write excel formulas instead of doing manual data entry. If there is no error return the original code and save the file as {source}.
-Prefer to use move_range() function if the user asks to move columns.
-ONLY RETURN CODE AS OUTPUTS, NO NEED FOR EXPLANATIONS.
-    """
-
-    refreshed_code_response = extract_code_from_llm(query_llm_gpt4(user_prompt).content)
-
-    return refreshed_code_response
-
-
+    return prompt
 
 

@@ -5,7 +5,7 @@ import pandas as pd
 from temp_explore import format_request
 from graph_explore import explore
 
-source = '/Users/suryaganesan/vscode/ml/projects/reporter/pivot.xlsx'
+source = '/Users/suryaganesan/vscode/ml/projects/reporter/sales_data_copy.xlsx'
 
 if 'key' not in st.session_state:
     st.session_state.key = 'value'
@@ -21,7 +21,7 @@ if 'exec_steps' not in st.session_state:
 
 request = st.chat_input("Enter your question...")
 img_folder = "/Users/suryaganesan/vscode/ml/projects/reporter/ph_images"
-            
+
 if request:
     print("\n------ B5 ------\n")
     for img in os.listdir(img_folder):
@@ -55,18 +55,18 @@ if request:
                                     streaming = st.empty()
                                     if current_task == "Closing...":
                                         response = value["response"]
-                                        with streaming.container():
-                                            st.write(response)
+                                        streaming.empty()
+                                        streaming.write(response)
                                         code_solution = value["response"]
                                     elif current_task == "Plan completed...":
                                         response = value["current_task"]
                                         streaming.empty()
-                                        st.caption(response)
-                                        st.caption("Generating code...")
+                                        streaming.caption(response)
+                                        streaming.caption("Generating code...")
                                     else:
                                         response = value["current_task"]
                                         streaming.empty()
-                                        st.caption(response)
+                                        streaming.caption(response)
                                     
                                 except Exception as e:
                                     print(f"Error Streaming event: {e}")

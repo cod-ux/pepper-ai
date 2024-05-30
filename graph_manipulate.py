@@ -3,6 +3,8 @@ import toml
 import asyncio
 import operator
 import pandas as pd
+import sys
+from io import StringIO
 
 from langchain_openai import ChatOpenAI
 from langchain_core.pydantic_v1 import BaseModel, Field
@@ -18,6 +20,7 @@ from temp_manipulate import (
     format_request,
     format_code_request,
     code_chain_template,
+    data_analyst_template
 )
 
 
@@ -61,20 +64,24 @@ class Plan(BaseModel):
         )
 
 class code(BaseModel):
-    imports: str = Field("Code block for import statements in the code")
-    code: str = Field("Code block for the code statement without import statements")
+    prefix: str = Field(description="Description of the problem and approach")
+    imports: str = Field(description="Code block for import statements in the code")
+    code: str = Field(description="Code block for the code statement without import statements")
     description: str = "Schema for code solutions to execute openpyxl related user requests"
 
+class answer(BaseModel):
+    ans: str = Field("Results of the executed program")
 
 # Preparing code_chain()
 
-prompt = code_chain_template()
-code_chain = prompt | llm.with_structured_output(code)
-
+code_prompt = code_chain_template()
+code_chain = code_prompt | llm.with_structured_output(code)
+analyst_prompt = data_analyst_template()
+analyst_chain = analyst_prompt | llm.with_structured_output(answer)
 
 # Node functions
 
-async def plan_steps(state: GraphState):
+def plan_steps(state: GraphState):
     messages = state["messages"]
     past_tasks = state["past_tasks"]
     past_execs = state["past_execs"]
@@ -90,16 +97,16 @@ async def plan_steps(state: GraphState):
         exec_string = ''
         for execs in past_execs[-4:0]:
             req = execs["request"]
-            table = execs["table"]
-            exec_string += f"\nPast Request: {req}\nTable: {table}\n"
+            update = execs["update"]
+            exec_string += f"\nPast Request: {req}\nTable: {update}\n"
         messages += [("system", f"These are the past 4 requests from the user along with a view of how the excel sheet looked like after executing the request: \n{exec_string}")]
 
     if len(past_execs) < 4:
         exec_string = ''
         for execs in past_execs:
             req = execs["request"]
-            table = execs["table"]
-            exec_string += f"\nRequest: {req}\nTable: {table}\n"
+            update = execs["update"]
+            exec_string += f"\nRequest: {req}\nTable: {update}\n"
         messages += [("system", f"These are the past few requests from the user along with a view of how the excel sheet looked like after executing the request: \n{exec_string}")]
 
 
@@ -108,7 +115,7 @@ async def plan_steps(state: GraphState):
 
     print("\nPlanning step begins...\n")
 
-    plan = await planner.ainvoke({"messages": messages})
+    plan = planner.invoke({"messages": messages})
     print(f"Planning step: \n, {plan.tasks}")
     plan_string = ''
 
@@ -119,11 +126,11 @@ async def plan_steps(state: GraphState):
 
     messages += [('system', f"For the user request, this is the list of tasks I need to achieve to fulfill the request: \n{plan_string}")]
     
-    return {"tasks": plan.tasks, "messages": messages, "past_tasks": past_tasks, "reflect": reflect}
+    return {"tasks": plan.tasks, "messages": messages, "past_tasks": past_tasks, "reflect": reflect, "current_task": f"Plan completed..."}
 
 # Function: Write code
 
-async def generate_code(state: GraphState):
+def generate_code(state: GraphState):
     messages = state["messages"]
     iterations = state["iterations"]
     error = state["error"]
@@ -148,7 +155,7 @@ async def generate_code(state: GraphState):
 
         messages += [('system', f'{code_request}')]
 
-        generation = await code_chain.ainvoke({"messages": messages})
+        generation = code_chain.invoke({"messages": messages})
         past_tasks += [f'{count}. {task}']
         past_tasks_string = ''
 
@@ -164,9 +171,9 @@ async def generate_code(state: GraphState):
     #last_msgs = messages[-2:]
     #last_indx = -2*len(task)
     #messages = messages[:last_indx] + last_msgs
-    return {"generation": generation, "messages": messages, "iterations": iterations}
+    return {"generation": generation, "messages": messages, "iterations": iterations, "current_task": "Executing code..."}
 
-async def check_code(state: GraphState):
+def check_code(state: GraphState):
     print("Code is being checked....")
     messages = state["messages"]
     generation = state["generation"]
@@ -182,7 +189,10 @@ async def check_code(state: GraphState):
         messages += [("system", f"Encountered an error with import statement: {e}")]
 
         print(f"Error with import statement: {e}")
-        return {"error": error, "messages": messages}
+        return {"error": error, "messages": messages, "current_task": "An error has occured. Retrying Solution..."}
+
+    captured_output = StringIO()
+    sys.stdout = captured_output
 
     try:
         exec(generation.code)
@@ -192,7 +202,13 @@ async def check_code(state: GraphState):
         messages += [("system", f"Encountered an error with code block statement: {e}")]
 
         print(f"Error with code block: {e}")
-        return {"error": error, "messages": messages}
+        return {"error": error, "messages": messages, "current_task": "An error has occured. Retrying Solution..."}
+
+    captured_output = captured_output.getvalue()
+    sys.stdout = sys.__stdout__
+
+    response = captured_output
+    messages += [("system", f"Observation: {response}")]
 
     error = "no"
 
@@ -200,9 +216,9 @@ async def check_code(state: GraphState):
         reflect = "yes"
 
     print("-----NO CODE TEST FAILURES-----")
-    return {"messages": messages, "error": error, "reflect": reflect}
+    return {"messages": messages, "error": error, "reflect": reflect, "current_task": "Typing Answer..."}
 
-async def reflect_code(state: GraphState):
+def reflect_code(state: GraphState):
     messages = state["messages"]
 
     messages += [
@@ -215,11 +231,24 @@ async def reflect_code(state: GraphState):
         )
     ]
 
-    reflections = await code_chain.ainvoke({"messages": messages})
+    reflections = code_chain.invoke({"messages": messages})
     messages += [("assistant", f"Here are reflections on the error: {reflections}")]
 
     return {"messages": messages}
 
+def write_answer(state: GraphState):
+    messages = state["messages"]
+    response = state["response"]
+    generation = state["generation"]
+
+    result = analyst_chain.invoke({"messages": messages})
+
+    response = result.ans
+    messages += [("system", f"Here is the progress on the user's request: \n{response}")]
+
+    generation_string = f"{generation.imports}\n{generation.code}"
+
+    return {"response": response, "messages": messages, "current_task": "Closing...", "generation": f"{generation_string}"}
 
 def should_end(state: GraphState):
     error = state["error"]
@@ -252,6 +281,7 @@ wf.add_node("planner", plan_steps)
 wf.add_node("generate", generate_code)
 wf.add_node("check_code", check_code)
 wf.add_node("reflect_code", reflect_code)
+wf.add_node("write_answer", write_answer)
 
 wf.set_entry_point("planner")
 wf.add_edge("planner", "generate")
@@ -260,26 +290,27 @@ wf.add_conditional_edges(
     "check_code",
     should_end,
     {
-        "end": END,
+        "end": "write_answer",
         "reflect_code": "reflect_code",
         "planner": "planner",
     }
 )
 wf.add_edge("reflect_code", "planner")
+wf.add_edge("write_answer", END)
 
 manipulate = wf.compile()
 
 print("\nApp starts work here....\n")
 
 #req = "reate a graph in the newsheet added based on the data in the first sheet. If you can't make the graph, print not possible."
-source = '/Users/suryaganesan/vscode/ml/projects/reporter/pivot.xlsx'
+source = '/Users/suryaganesan/vscode/ml/projects/reporter/sales_data_copy.xlsx'
 
 
  
 #response = app.invoke({"messages": [('user', formatted_req)], "request": req, "source_path": source, "max_iterations": 30, "iterations": 0})
 
 
-async def main():
+def main():
     df = pd.read_excel(source)
     print(df.head())
     executions = []
@@ -289,7 +320,7 @@ async def main():
         temp = []
 
         inputs = {"messages": [('user', formatted_req)], "request": req, "source_path": source, "max_iterations": 3, "iterations": 0, "past_execs": executions}
-        async for event in manipulate.astream(inputs):
+        for event in manipulate.stream(inputs):
             for key, value in event.items():
                 if key != "__END__":
                     print()
@@ -303,7 +334,4 @@ async def main():
         df = pd.read_excel(source)
         print(df.head())
 
-asyncio.run(main())
-
-print("\n......App ends work here.\n")
 

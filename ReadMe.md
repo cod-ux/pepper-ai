@@ -41,89 +41,104 @@ A web app to clean & prepare your excel data for analysis faster by manipulating
 2. Make plan and generate code and execute each step.
 3. Make plan, execute each step, fix errors and replan to achieve goal, with graph.
 
-## Tracking
+## Interim Plan
 
-Exp 1: Add the entire prompt to one message
+1. Fix the backend - exploration and manipulation.
+2. Fix the frontend - Streamlit multi page
+3. Choose audience
+4. Run MVP trials
 
-Result: Did not work, still made a multi-step plan for a simple request
+### Fix the backend - Explore and Manipulate
 
-Exp 2: Change the propmt to identify tasks instead of make a plan.
+Following test queries should work:
+**1. Explore**
 
-Result: Tasks are more accurate and works.
-Challenge: Individual tasks are some time exploratory and provide some answers for the next step to use, 
-but since the generated code is dynamically executed, there isn't a way to add the exploration script's response to the messages.
+- What is the data about?
+- How many columns and sheets?
+- Which is the more popular product?
+- How much of each have we sold?
+- Make me a graph
+- Make me 2 graphs
+- Show me visually a comparison on the popularity of both products
 
-Exp 3: Ask the generated code to always return a response with the same variable name to extract and add to messages if the response is not None.
-Implementation: 
-1. Planner needs to run on messages not template, and messages variable should be used from state class. (done)
-2. Generated code should be asked to: Save file with the same source file_name and return a response variable with the same name.
-3. Response needs to be added to messages by checking if there is a response every time code is executed
+**2. Manipulate**
 
-Challenge in 3-1: planner template encounters some error when loading template from {template function}
-Solution: Creating a planner object from llms newly every time planner node is called. Need to check if this is time consuming.
+- Delete the last column (Works)
+- Create a new sheet (Works)
+- VLOOKUP based on ID column
+- Create a new column for ‘x’
+- Delete rows that are highlighted in grey
+- Highlight columns
+- Delete rows and columns conditionally
 
-Challenge 3-2: First loop runs well, but adding to the messages seems to pop an error when the second loop starts.
-Solution: Needed to create the code gen chain only once and not multiple times
 
-Challenge 3-3: We want the user request to be correctly executed in the final step. To do that we were thinking of
-breaking the request to list of tasks, then execute each task individually. Hoping that executing step by step would result in
-minimal errors. But this requires viewing the new state of the excel after each step. Instead would be accurate if we just, iteratively
-add code adn executing only in the end?
-Trial solution: At each task take the code solution so far, mentioning the tasks it achieves and provide a new task to add to the
-existing code. And when there is no more tasks left to complete, execute the code.
+### Testing explore
 
-Rewriting Exp 3: Make the flow such that at each step code is added iteratively to each task and executed at the end when the
-list is exhausted.
+Source: Sales_data_copy.xlsx
 
-Implementation: 
-1. No change to planner (done)
-2. Stop messages from adding sheet views at every step. (done)
-3. First message after planning should be include list of tasks. (done)
-4. Need to maintain a variable for past_code_steps. (done)
-5. After exec each task, add message to say here are the steps coded. (done)
-6. Before exec each task, Add here is the task that needs to be added to the code. (done)
+#### What is the data about?:
+Errors: 0
+The Excel file contains three sheets with the following data:
 
-7. Ask the code to return a response object with the same variable name in the end, to check if the function was executed successfully or what the error was.
-But would that be necessary? What if we just executed and figured what the mistake was ourselves? This would probably help debugging a lot.
-But still, I'll have to ask the LLM to include try statements everywhere and ask it to write and return code that is easily debuggable.
-But again, I can still ask it to write debuggable code with a lot of try statements, so that the error can be specified.
-Preferably for simplicity, we do not include try statements inside and catch adn use the error only when we execute the code.
-The alternative would be to ask the LLM return a response object, describing the problem when an expected error is thrown. 
-Which will be used for debugging the code better.
-We're gonna choose simple and just use the error that may be caught during dynamic execution itself. Cuz the alternative is a lot of work and complexity.
-Cancelled step 7.
+1. **Sheet1**: This sheet contains detailed sales data, including columns such as `ORDERNUMBER`, `QUANTITYORDERED`, `DEALSIZE`, `ORDERLINENUMBER`, `SALES`, `ORDERDATE`, `STATUS`, `QTR_ID`, `MONTH_ID`, `YEAR_ID`, `PRODUCTLINE`, `MSRP`, `PRODUCTCODE`, `CUSTOMERNAME`, `PHONE`, `ADDRESSLINE1`, `ADDRESSLINE2`, `CITY`, `STATE`, `POSTALCODE`, `COUNTRY`, and `TERRITORY`.
 
-Solution: Created an iterative coding process where an additional task is completed at each step to produce the final code
-that achieves all tasks.
+2. **New Sheet**: This sheet is empty and does not contain any data.
 
-Exp 4: Add a try statement to execute the imports and code blocks. And the functionality to restart the generation process
-one additional time to correct the error.
+3. **GroupedData**: This sheet contains summarized data with columns `PRODUCTCODE` and `QUANTITYORDERED`, showing the total quantity ordered for each product code.
 
-Implementation:
-1. Add try statements and returning the error to the state variable error. (done)
-2. Add error variable to messages if caught. (done)
+The system successfully executed the request without any errors. 
 
-Exp 5: Figure out how to charge users
+#### How many columns and sheets?
+Errors: 0
+The dataset has 3 sheets. The number of columns in each sheet are as follows:
+- Sheet1: 21 columns
+- New Sheet: 0 columns
+- GroupedData: 2 columns 
 
-Challenge: Can't accept payments to my name or account as I'm on a student visa
-Trial Solution: Create a paypal business account for an Indivual business owner in India and work for them to promote their business.
-Not going to get IEC code because I'm only allowing pre-order and free trial and charging a one-time fee of £0.
+#### Which is the more popular product?
+Errors: 0
+The system successfully executed the request. 
 
-Exp 6: Make the Graph to add nodes - plan, generate, check & reflect, should end.
+Based on the data provided:
+- The number of unique products being sold is 2.
+- The most popular product is 'S10_1949'. 
 
-Implementation:
-(Make a graph first)
-1. Add check code to graph. (done)
-2. Add should end to graph. (done)
-3. Add reflect to graph. (done)
-4. Make responses print asynchronously. (done)
-5. Maintain steps executed so far + code solutions.(done)
-6. Make a quick CLI to test the graph app against differet requests (D2)
-7. Include past 5 executed requests + code solutions from streamlit's session state when making future plans for requests. (D2)
-8. Make generation messages short term, remove them after final script is generated. (done)
-9. Make a Langgraph app to explore and answer questions about a dataset. (D3) - Ask the LLM to use st.write for texts and images.
+#### How much of each have we sold?
+Erros: 0
 
-10. Use Langgraph app to generate scripts. (D4)
-11. Stream Langgraph sys messages to streamlit. (D4)
-12. Make RAG bot for documentation. (D4)
+The system successfully imported the necessary libraries. Now, I will proceed with loading the Excel file and analyzing the data. 
 
+
+#### Make me a graph
+Errors: 0
+
+No graph was made.
+Response: A graph has been created to visualize the sales data from Sheet1.
+
+#### Make me 2 graphs
+Errors: 0, Hallucinated response. No graphs made.
+
+Response: 
+The system successfully loaded the Excel file and read the first sheet into a DataFrame. 
+Generated two graphs: a bar plot for total sales per year and a line plot for quantity ordered over time. 
+
+#### Show me visually a comparison on the popularity of both products
+
+Errors: 0. No graphs made. But recognized that itself.
+
+Response:
+ The system successfully loaded the Excel file and displayed the first few rows of the data from 'Sheet1'. 
+
+However, the system did not complete the request to show a visual comparison of the popularity of both products. 
+
+Please try again to generate the visual comparison. 
+
+## Change ideas
+1. Provied a better description of the dataset
+2. Provide the description of the dataset in the prompt, not the messages
+3. Ask planner to make a coding plan along with variable names and logic of the program
+4. Fix the print statement not working and capturing code lines
+5. Temporarily disable past execs being added to message
+6. Ask write_answer to be a business analyst and answer business like questions.
+
+Provide a better description of the dataset:

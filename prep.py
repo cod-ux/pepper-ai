@@ -23,7 +23,6 @@ header_ph.markdown( "<h3 style='text-align: center;'>Command AI: Spend less time
 st.markdown("<h3> </h3>", unsafe_allow_html=True)
 st.markdown("<h3> </h3>", unsafe_allow_html=True)
 uploader_ph = st.empty()
-uploaded_file = None
 iteration = 0
 
 
@@ -48,27 +47,31 @@ if "cache_clear" not in st.session_state:
 if "state_stack" not in st.session_state:
     st.session_state.state_stack = [] # binaries of excels
 
-if st.session_state.uploaded_file is None:
-    print("\n------ B1 ------\n")
-    st.session_state.file_path = None
-    with uploader_ph.container():
-        st.session_state.uploaded_file = st.file_uploader("Upload or Select Excel file", type=["xlsx", "xls"])
-        if st.session_state.uploaded_file:
-            print("\n------ B2 ------\n")
-            file_path = copy_excel_locally(st.session_state.uploaded_file)
-            unmerge_sheets(file_path)
-            st.session_state.file_path = file_path
-            st.session_state.state_stack.append(get_binary(st.session_state.file_path))
 
 def main():
     global cache_clear
     global uploaded_file
-    global iteration    
+    global iteration
+
+    if st.session_state.uploaded_file is None:
+        print("\n------ B1 ------\n")
+        print(f"Uploaded file says: {st.session_state.uploaded_file}")
+        st.session_state.file_path = None
+        with uploader_ph.container():
+            uploaded_file = st.file_uploader("Upload or Select Excel file", type=["xlsx", "xls"])
+            if uploaded_file:
+                st.session_state.uploaded_file = uploaded_file
+                print("\n------ B2 ------\n")
+                print(f"Uploaded file says: {st.session_state.uploaded_file}")
+                file_path = copy_excel_locally(st.session_state.uploaded_file)
+                unmerge_sheets(file_path)
+                st.session_state.file_path = file_path
+                st.session_state.state_stack.append(get_binary(st.session_state.file_path))    
      
 #     Table view
     if st.session_state.file_path is not None:
-            uploader_ph.empty()
             print("\n------ B4 ------\n")
+            print(f"Uploaded file says: {st.session_state.uploaded_file}")
             col1, col2 = st.columns([5,2])
 
             st.sidebar.title("Side Panel")
