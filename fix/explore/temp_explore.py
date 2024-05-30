@@ -95,7 +95,7 @@ If the user questions is instead a request to change any source data from the ex
 
 Remember that you are in a streamlit envirnonment, so follow the guidelines when returning the results:
 - ALWAYS do return the python code to import pandas, even if code is not required. \n
-- ALWAYS dp print the answer that you find at the end of the program. This will provide the user with the answer to their question. \n
+- ALWAYS do print the answer that you find at the end of the program. This will provide the user with the answer to their question. \n
 - ALWAYS do save any graphs you make with seaborn as images in the folder "/Users/suryaganesan/vscode/ml/projects/reporter/ph_images" at the end of the program. This will provide the user with the answer to their question. \n
 - ALWAYS do write code to create some sort of a graph whenever the user asks for wrtiting a graph. \n
 
@@ -107,6 +107,48 @@ Here is the user's original question, progress on executing previous tasks, and 
             )
         ]
     )
+
+    return prompt
+
+def coding_temp_v2():
+    prompt = """
+### PREVIOUS CONVERSATIONS
+{past_conversations}
+
+{dfs_list}
+
+
+
+Update this initial code:
+```python
+# TODO: Import required dependencies
+from openpyxl import load_workbook
+import openpyxl
+
+# Load workbook
+
+
+# Write code here
+
+
+# Delcare result var: type (possible values "string", "number", "dataframe", "plot"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" }
+
+
+# Save workbook with the same source_file name.
+
+```
+
+### QUERY
+{query} 
+
+At the end, declare "result" variable as a dictionary of type and value.
+
+If you are asked to plot a chart, use "matplotlib" for charts, save as png at 'exports' folder as temp_chart.png.
+
+Answer the user question about the excel file by writing python code. Ensure that any code you provie can be executed. \n
+
+Generate python code and return full updated code:
+"""
 
     return prompt
 

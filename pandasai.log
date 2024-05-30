@@ -826,3 +826,648 @@ result = {'type': 'string', 'value': "The column 'phone' has data type 'number'.
 2024-05-02 18:25:07 [INFO] Executing Step 7: ResultValidation
 2024-05-02 18:25:07 [INFO] Answer: {'type': 'string', 'value': "The column 'phone' has data type 'number'."}
 2024-05-02 18:25:07 [INFO] Executing Step 8: ResultParsing
+2024-05-30 23:31:14 [INFO] Question: What is this data about?
+2024-05-30 23:31:14 [INFO] Running PandasAI with openai LLM...
+2024-05-30 23:31:14 [INFO] Prompt ID: 3146b0fd-78bd-46bc-a6a8-95cad742a3c6
+2024-05-30 23:31:14 [INFO] Executing Pipeline: GenerateChatPipeline
+2024-05-30 23:31:14 [INFO] Executing Step 0: ValidatePipelineInput
+2024-05-30 23:31:14 [INFO] Executing Step 1: CacheLookup
+2024-05-30 23:31:14 [INFO] Executing Step 2: PromptGeneration
+2024-05-30 23:31:14 [INFO] Using prompt: <dataframe>
+dfs[0]:10406x22
+ORDERNUMBER,QUANTITYORDERED,DEALSIZE,ORDERLINENUMBER,SALES,ORDERDATE,STATUS,QTR_ID,MONTH_ID,YEAR_ID,PRODUCTLINE,MSRP,PRODUCTCODE,CUSTOMERNAME,PHONE,ADDRESSLINE1,ADDRESSLINE2,CITY,STATE,POSTALCODE,COUNTRY,TERRITORY
+10402.0,46.0,Medium,9.0,2497.77,4/7/2005 0:00,In Process,,7.0,2004,PRODUCTLINE,,,Corporate Gift Ideas Co.,6562-9555,"C/ Araquil, 67",Suite 750,Pasadena,,V3F 2K1,,
+,,,3.0,4514.92,6/15/2004 0:00,,3.0,3.0,,,214.0,S10_2016,,,,Suite 101,,MA,5020,Australia,Japan
+10403.0,30.0,DEALSIZE,,,,Shipped,2.0,,YEAR_ID,Classic Cars,193.0,S10_1949,Classic Legends Inc.,4155551450,7825 Douglas Av.,,Cambridge,BC,,Norway,APAC
+</dataframe>
+
+
+
+
+Update this initial code:
+```python
+# TODO: import the required dependencies
+import pandas as pd
+
+# Write code here
+
+# Declare result var: 
+type (possible values "string", "number", "dataframe", "plot"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" }
+
+```
+
+
+
+### QUERY
+ What is this data about?
+
+Variable `dfs: list[pd.DataFrame]` is already declared.
+
+At the end, declare "result" variable as a dictionary of type and value.
+
+If you are asked to plot a chart, use "matplotlib" for charts, save as png.
+
+
+Generate python code and return full updated code:
+2024-05-30 23:31:14 [INFO] Executing Step 3: CodeGenerator
+2024-05-30 23:31:22 [INFO] HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+2024-05-30 23:31:22 [INFO] Prompt used:
+            <dataframe>
+dfs[0]:10406x22
+ORDERNUMBER,QUANTITYORDERED,DEALSIZE,ORDERLINENUMBER,SALES,ORDERDATE,STATUS,QTR_ID,MONTH_ID,YEAR_ID,PRODUCTLINE,MSRP,PRODUCTCODE,CUSTOMERNAME,PHONE,ADDRESSLINE1,ADDRESSLINE2,CITY,STATE,POSTALCODE,COUNTRY,TERRITORY
+10402.0,46.0,Medium,9.0,2497.77,4/7/2005 0:00,In Process,,7.0,2004,PRODUCTLINE,,,Corporate Gift Ideas Co.,6562-9555,"C/ Araquil, 67",Suite 750,Pasadena,,V3F 2K1,,
+,,,3.0,4514.92,6/15/2004 0:00,,3.0,3.0,,,214.0,S10_2016,,,,Suite 101,,MA,5020,Australia,Japan
+10403.0,30.0,DEALSIZE,,,,Shipped,2.0,,YEAR_ID,Classic Cars,193.0,S10_1949,Classic Legends Inc.,4155551450,7825 Douglas Av.,,Cambridge,BC,,Norway,APAC
+</dataframe>
+
+
+
+
+Update this initial code:
+```python
+# TODO: import the required dependencies
+import pandas as pd
+
+# Write code here
+
+# Declare result var: 
+type (possible values "string", "number", "dataframe", "plot"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" }
+
+```
+
+
+
+### QUERY
+ What is this data about?
+
+Variable `dfs: list[pd.DataFrame]` is already declared.
+
+At the end, declare "result" variable as a dictionary of type and value.
+
+If you are asked to plot a chart, use "matplotlib" for charts, save as png.
+
+
+Generate python code and return full updated code:
+            
+2024-05-30 23:31:22 [INFO] Code generated:
+            ```
+            # TODO: import the required dependencies
+import pandas as pd
+
+# Write code here
+dfs = [
+    pd.DataFrame({
+        'ORDERNUMBER': [10402.0, None, 10403.0],
+        'QUANTITYORDERED': [46.0, None, 30.0],
+        'DEALSIZE': ['Medium', None, 'DEALSIZE'],
+        'ORDERLINENUMBER': [9.0, 3.0, None],
+        'SALES': [2497.77, 4514.92, None],
+        'ORDERDATE': ['4/7/2005 0:00', '6/15/2004 0:00', None],
+        'STATUS': ['In Process', None, 'Shipped'],
+        'QTR_ID': [None, 3.0, 2.0],
+        'MONTH_ID': [7.0, 3.0, None],
+        'YEAR_ID': [2004, 2004, 'YEAR_ID'],
+        'PRODUCTLINE': [None, 'Classic Cars', 'Classic Cars'],
+        'MSRP': [None, 214.0, 193.0],
+        'PRODUCTCODE': [None, 'S10_2016', 'S10_1949'],
+        'CUSTOMERNAME': ['Corporate Gift Ideas Co.', 'Classic Legends Inc.', None],
+        'PHONE': ['6562-9555', '4155551450', None],
+        'ADDRESSLINE1': ['C/ Araquil, 67', None, '7825 Douglas Av.'],
+        'ADDRESSLINE2': ['Suite 750', 'Suite 101', None],
+        'CITY': ['Pasadena', None, 'Cambridge'],
+        'STATE': [None, 'MA', 'BC'],
+        'POSTALCODE': ['V3F 2K1', '5020', None],
+        'COUNTRY': [None, 'Australia', 'Norway'],
+        'TERRITORY': [None, 'Japan', 'APAC']
+    })
+]
+
+# Declare result var:
+result = {
+    "type": "string",
+    "value": "The data consists of information related to orders, including order details like order number, quantity ordered, sales, order date, status, customer details, product details, and location details."
+}
+            ```
+            
+2024-05-30 23:31:22 [INFO] Executing Step 4: CachePopulation
+2024-05-30 23:31:22 [INFO] Executing Step 5: CodeCleaning
+2024-05-30 23:31:22 [INFO] 
+Code running:
+```
+result = {'type': 'string', 'value': 'The data consists of information related to orders, including order details like order number, quantity ordered, sales, order date, status, customer details, product details, and location details.'}
+        ```
+2024-05-30 23:31:22 [INFO] Executing Step 6: CodeExecution
+2024-05-30 23:31:22 [INFO] Executing Step 7: ResultValidation
+2024-05-30 23:31:22 [INFO] Answer: {'type': 'string', 'value': 'The data consists of information related to orders, including order details like order number, quantity ordered, sales, order date, status, customer details, product details, and location details.'}
+2024-05-30 23:31:22 [INFO] Executing Step 8: ResultParsing
+2024-05-30 23:33:37 [INFO] Question: What is this data about?
+2024-05-30 23:33:37 [INFO] Running PandasAI with openai LLM...
+2024-05-30 23:33:37 [INFO] Prompt ID: 43c3bfca-6446-4f62-af83-4d2df43bcc0c
+2024-05-30 23:33:37 [INFO] Executing Pipeline: GenerateChatPipeline
+2024-05-30 23:33:37 [INFO] Executing Step 0: ValidatePipelineInput
+2024-05-30 23:33:37 [INFO] Executing Step 1: CacheLookup
+2024-05-30 23:33:37 [INFO] Using cached response
+2024-05-30 23:33:37 [INFO] Executing Step 2: PromptGeneration
+2024-05-30 23:33:37 [INFO] Executing Step 2: Skipping...
+2024-05-30 23:33:37 [INFO] Executing Step 3: CodeGenerator
+2024-05-30 23:33:37 [INFO] Executing Step 3: Skipping...
+2024-05-30 23:33:37 [INFO] Executing Step 4: CachePopulation
+2024-05-30 23:33:37 [INFO] Executing Step 4: Skipping...
+2024-05-30 23:33:37 [INFO] Executing Step 5: CodeCleaning
+2024-05-30 23:33:37 [INFO] 
+Code running:
+```
+result = {'type': 'string', 'value': 'The data consists of information related to orders, including order details like order number, quantity ordered, sales, order date, status, customer details, product details, and location details.'}
+        ```
+2024-05-30 23:33:37 [INFO] Executing Step 6: CodeExecution
+2024-05-30 23:33:37 [INFO] Executing Step 7: ResultValidation
+2024-05-30 23:33:37 [INFO] Answer: {'type': 'string', 'value': 'The data consists of information related to orders, including order details like order number, quantity ordered, sales, order date, status, customer details, product details, and location details.'}
+2024-05-30 23:33:37 [INFO] Executing Step 8: ResultParsing
+2024-05-30 23:36:43 [INFO] Question: What is this data about?
+2024-05-30 23:36:43 [INFO] Running PandasAI with langchain_openai LLM...
+2024-05-30 23:36:43 [INFO] Prompt ID: 36419659-1c01-431b-8b11-b6834704a6a2
+2024-05-30 23:36:43 [INFO] Executing Pipeline: GenerateChatPipeline
+2024-05-30 23:36:43 [INFO] Executing Step 0: ValidatePipelineInput
+2024-05-30 23:36:43 [INFO] Executing Step 1: CacheLookup
+2024-05-30 23:36:43 [INFO] Using cached response
+2024-05-30 23:36:43 [INFO] Executing Step 2: PromptGeneration
+2024-05-30 23:36:43 [INFO] Executing Step 2: Skipping...
+2024-05-30 23:36:43 [INFO] Executing Step 3: CodeGenerator
+2024-05-30 23:36:43 [INFO] Executing Step 3: Skipping...
+2024-05-30 23:36:43 [INFO] Executing Step 4: CachePopulation
+2024-05-30 23:36:43 [INFO] Executing Step 4: Skipping...
+2024-05-30 23:36:43 [INFO] Executing Step 5: CodeCleaning
+2024-05-30 23:36:43 [INFO] 
+Code running:
+```
+result = {'type': 'string', 'value': 'The data consists of information related to orders, including order details like order number, quantity ordered, sales, order date, status, customer details, product details, and location details.'}
+        ```
+2024-05-30 23:36:43 [INFO] Executing Step 6: CodeExecution
+2024-05-30 23:36:43 [INFO] Executing Step 7: ResultValidation
+2024-05-30 23:36:43 [INFO] Answer: {'type': 'string', 'value': 'The data consists of information related to orders, including order details like order number, quantity ordered, sales, order date, status, customer details, product details, and location details.'}
+2024-05-30 23:36:43 [INFO] Executing Step 8: ResultParsing
+2024-05-30 23:38:15 [INFO] Question: What is this data about?
+2024-05-30 23:38:15 [INFO] Running PandasAI with langchain_openai LLM...
+2024-05-30 23:38:15 [INFO] Prompt ID: 758992ad-db2f-4f2d-b908-47a119eaacef
+2024-05-30 23:38:15 [INFO] Executing Pipeline: GenerateChatPipeline
+2024-05-30 23:38:16 [INFO] Executing Step 0: ValidatePipelineInput
+2024-05-30 23:38:16 [INFO] Executing Step 1: CacheLookup
+2024-05-30 23:38:16 [INFO] Using cached response
+2024-05-30 23:38:16 [INFO] Executing Step 2: PromptGeneration
+2024-05-30 23:38:16 [INFO] Executing Step 2: Skipping...
+2024-05-30 23:38:16 [INFO] Executing Step 3: CodeGenerator
+2024-05-30 23:38:16 [INFO] Executing Step 3: Skipping...
+2024-05-30 23:38:16 [INFO] Executing Step 4: CachePopulation
+2024-05-30 23:38:16 [INFO] Executing Step 4: Skipping...
+2024-05-30 23:38:16 [INFO] Executing Step 5: CodeCleaning
+2024-05-30 23:38:16 [INFO] 
+Code running:
+```
+result = {'type': 'string', 'value': 'The data consists of information related to orders, including order details like order number, quantity ordered, sales, order date, status, customer details, product details, and location details.'}
+        ```
+2024-05-30 23:38:16 [INFO] Executing Step 6: CodeExecution
+2024-05-30 23:38:16 [INFO] Executing Step 7: ResultValidation
+2024-05-30 23:38:16 [INFO] Answer: {'type': 'string', 'value': 'The data consists of information related to orders, including order details like order number, quantity ordered, sales, order date, status, customer details, product details, and location details.'}
+2024-05-30 23:38:16 [INFO] Executing Step 8: ResultParsing
+2024-05-30 23:38:33 [INFO] Question: Delete the last column and save it as an excel
+2024-05-30 23:38:33 [INFO] Running PandasAI with langchain_openai LLM...
+2024-05-30 23:38:33 [INFO] Prompt ID: ce9f7f6b-6157-4568-b501-3fdae01e45af
+2024-05-30 23:38:33 [INFO] Executing Pipeline: GenerateChatPipeline
+2024-05-30 23:38:33 [INFO] Executing Step 0: ValidatePipelineInput
+2024-05-30 23:38:33 [INFO] Executing Step 1: CacheLookup
+2024-05-30 23:38:33 [INFO] Executing Step 2: PromptGeneration
+2024-05-30 23:38:33 [INFO] Using prompt: <dataframe>
+dfs[0]:10406x22
+ORDERNUMBER,QUANTITYORDERED,DEALSIZE,ORDERLINENUMBER,SALES,ORDERDATE,STATUS,QTR_ID,MONTH_ID,YEAR_ID,PRODUCTLINE,MSRP,PRODUCTCODE,CUSTOMERNAME,PHONE,ADDRESSLINE1,ADDRESSLINE2,CITY,STATE,POSTALCODE,COUNTRY,TERRITORY
+10145.0,35.0,,,5756.52,,In Process,QTR_ID,,,Classic Cars,118,,"Dragon Souveniers, Ltd.",0033383230,11328 Douglas Av.,,Newark,,50553,Japan,
+,20.0,Small,11.0,,4/8/2005 0:00,,,10.0,2003,,MSRP,PRODUCTCODE,Gift Depot Inc.,6698603660,,Level 15,Torino,Osaka,44000,UK,Japan
+10126.0,,Large,12.0,4860.24,11/6/2003 0:00,Disputed,2,7.0,YEAR_ID,PRODUCTLINE,,S10_4698,,2089168840,9408 Furth Circle,ADDRESSLINE2,,Tokyo,,,TERRITORY
+</dataframe>
+
+
+
+
+Update this initial code:
+```python
+# TODO: import the required dependencies
+import pandas as pd
+
+# Write code here
+
+# Declare result var: 
+type (possible values "string", "number", "dataframe", "plot"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" }
+
+```
+
+
+
+### QUERY
+ Delete the last column and save it as an excel
+
+Variable `dfs: list[pd.DataFrame]` is already declared.
+
+At the end, declare "result" variable as a dictionary of type and value.
+
+If you are asked to plot a chart, use "matplotlib" for charts, save as png.
+
+
+Generate python code and return full updated code:
+2024-05-30 23:38:33 [INFO] Executing Step 3: CodeGenerator
+2024-05-30 23:38:35 [INFO] HTTP Request: POST https://api.openai.com/v1/completions "HTTP/1.1 200 OK"
+2024-05-30 23:38:35 [ERROR] Pipeline failed on step 3: No code found in the response
+2024-05-30 23:39:46 [INFO] Question: How many integer columns do we have in this?
+2024-05-30 23:39:46 [INFO] Running PandasAI with langchain_openai LLM...
+2024-05-30 23:39:46 [INFO] Prompt ID: 88f3d8be-d14a-4f90-98e9-95fbb8b1e3c1
+2024-05-30 23:39:46 [INFO] Executing Pipeline: GenerateChatPipeline
+2024-05-30 23:39:46 [INFO] Executing Step 0: ValidatePipelineInput
+2024-05-30 23:39:46 [INFO] Executing Step 1: CacheLookup
+2024-05-30 23:39:46 [INFO] Executing Step 2: PromptGeneration
+2024-05-30 23:39:46 [INFO] Using prompt: <dataframe>
+dfs[0]:10406x22
+ORDERNUMBER,QUANTITYORDERED,DEALSIZE,ORDERLINENUMBER,SALES,ORDERDATE,STATUS,QTR_ID,MONTH_ID,YEAR_ID,PRODUCTLINE,MSRP,PRODUCTCODE,CUSTOMERNAME,PHONE,ADDRESSLINE1,ADDRESSLINE2,CITY,STATE,POSTALCODE,COUNTRY,TERRITORY
+10145.0,35.0,,,5756.52,,In Process,QTR_ID,,,Classic Cars,118,,"Dragon Souveniers, Ltd.",0033383230,11328 Douglas Av.,,Newark,,50553,Japan,
+,20.0,Small,11.0,,4/8/2005 0:00,,,10.0,2003,,MSRP,PRODUCTCODE,Gift Depot Inc.,6698603660,,Level 15,Torino,Osaka,44000,UK,Japan
+10126.0,,Large,12.0,4860.24,11/6/2003 0:00,Disputed,2,7.0,YEAR_ID,PRODUCTLINE,,S10_4698,,2089168840,9408 Furth Circle,ADDRESSLINE2,,Tokyo,,,TERRITORY
+</dataframe>
+
+
+
+
+Update this initial code:
+```python
+# TODO: import the required dependencies
+import pandas as pd
+
+# Write code here
+
+# Declare result var: 
+type (possible values "string", "number", "dataframe", "plot"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" }
+
+```
+
+
+
+### QUERY
+ How many integer columns do we have in this?
+
+Variable `dfs: list[pd.DataFrame]` is already declared.
+
+At the end, declare "result" variable as a dictionary of type and value.
+
+If you are asked to plot a chart, use "matplotlib" for charts, save as png.
+
+
+Generate python code and return full updated code:
+2024-05-30 23:39:46 [INFO] Executing Step 3: CodeGenerator
+2024-05-30 23:39:48 [INFO] HTTP Request: POST https://api.openai.com/v1/completions "HTTP/1.1 200 OK"
+2024-05-30 23:39:48 [ERROR] Pipeline failed on step 3: No code found in the response
+2024-05-30 23:40:28 [INFO] Question: Make a plot with this data
+2024-05-30 23:40:28 [INFO] Running PandasAI with langchain_openai LLM...
+2024-05-30 23:40:28 [INFO] Prompt ID: b1e52bcf-da24-4b7b-ba4a-349728366ae7
+2024-05-30 23:40:28 [INFO] Executing Pipeline: GenerateChatPipeline
+2024-05-30 23:40:28 [INFO] Executing Step 0: ValidatePipelineInput
+2024-05-30 23:40:28 [INFO] Executing Step 1: CacheLookup
+2024-05-30 23:40:28 [INFO] Executing Step 2: PromptGeneration
+2024-05-30 23:40:28 [INFO] Using prompt: <dataframe>
+dfs[0]:10406x22
+ORDERNUMBER,QUANTITYORDERED,DEALSIZE,ORDERLINENUMBER,SALES,ORDERDATE,STATUS,QTR_ID,MONTH_ID,YEAR_ID,PRODUCTLINE,MSRP,PRODUCTCODE,CUSTOMERNAME,PHONE,ADDRESSLINE1,ADDRESSLINE2,CITY,STATE,POSTALCODE,COUNTRY,TERRITORY
+10145.0,35.0,,,5756.52,,In Process,QTR_ID,,,Classic Cars,118,,"Dragon Souveniers, Ltd.",0033383230,11328 Douglas Av.,,Newark,,50553,Japan,
+,20.0,Small,11.0,,4/8/2005 0:00,,,10.0,2003,,MSRP,PRODUCTCODE,Gift Depot Inc.,6698603660,,Level 15,Torino,Osaka,44000,UK,Japan
+10126.0,,Large,12.0,4860.24,11/6/2003 0:00,Disputed,2,7.0,YEAR_ID,PRODUCTLINE,,S10_4698,,2089168840,9408 Furth Circle,ADDRESSLINE2,,Tokyo,,,TERRITORY
+</dataframe>
+
+
+
+
+Update this initial code:
+```python
+# TODO: import the required dependencies
+import pandas as pd
+
+# Write code here
+
+# Declare result var: 
+type (possible values "string", "number", "dataframe", "plot"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" }
+
+```
+
+
+
+### QUERY
+ Make a plot with this data
+
+Variable `dfs: list[pd.DataFrame]` is already declared.
+
+At the end, declare "result" variable as a dictionary of type and value.
+
+If you are asked to plot a chart, use "matplotlib" for charts, save as png.
+
+
+Generate python code and return full updated code:
+2024-05-30 23:40:28 [INFO] Executing Step 3: CodeGenerator
+2024-05-30 23:40:30 [INFO] HTTP Request: POST https://api.openai.com/v1/completions "HTTP/1.1 200 OK"
+2024-05-30 23:40:30 [ERROR] Pipeline failed on step 3: No code found in the response
+2024-05-30 23:41:49 [INFO] Question: Make any chart
+2024-05-30 23:41:49 [INFO] Running PandasAI with langchain_openai LLM...
+2024-05-30 23:41:49 [INFO] Prompt ID: 111b3b46-2440-4854-bfae-2117cb36581c
+2024-05-30 23:41:49 [INFO] Executing Pipeline: GenerateChatPipeline
+2024-05-30 23:41:49 [INFO] Executing Step 0: ValidatePipelineInput
+2024-05-30 23:41:49 [INFO] Executing Step 1: CacheLookup
+2024-05-30 23:41:49 [INFO] Executing Step 2: PromptGeneration
+2024-05-30 23:41:49 [INFO] Using prompt: <dataframe>
+dfs[0]:10406x22
+ORDERNUMBER,QUANTITYORDERED,DEALSIZE,ORDERLINENUMBER,SALES,ORDERDATE,STATUS,QTR_ID,MONTH_ID,YEAR_ID,PRODUCTLINE,MSRP,PRODUCTCODE,CUSTOMERNAME,PHONE,ADDRESSLINE1,ADDRESSLINE2,CITY,STATE,POSTALCODE,COUNTRY,TERRITORY
+10145.0,35.0,,,5756.52,,In Process,QTR_ID,,,Classic Cars,118,,"Dragon Souveniers, Ltd.",0033383230,11328 Douglas Av.,,Newark,,50553,Japan,
+,20.0,Small,11.0,,4/8/2005 0:00,,,10.0,2003,,MSRP,PRODUCTCODE,Gift Depot Inc.,6698603660,,Level 15,Torino,Osaka,44000,UK,Japan
+10126.0,,Large,12.0,4860.24,11/6/2003 0:00,Disputed,2,7.0,YEAR_ID,PRODUCTLINE,,S10_4698,,2089168840,9408 Furth Circle,ADDRESSLINE2,,Tokyo,,,TERRITORY
+</dataframe>
+
+
+
+
+Update this initial code:
+```python
+# TODO: import the required dependencies
+import pandas as pd
+
+# Write code here
+
+# Declare result var: 
+type (possible values "string", "number", "dataframe", "plot"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" }
+
+```
+
+
+
+### QUERY
+ Make any chart
+
+Variable `dfs: list[pd.DataFrame]` is already declared.
+
+At the end, declare "result" variable as a dictionary of type and value.
+
+If you are asked to plot a chart, use "matplotlib" for charts, save as png.
+
+
+Generate python code and return full updated code:
+2024-05-30 23:41:49 [INFO] Executing Step 3: CodeGenerator
+2024-05-30 23:41:52 [INFO] HTTP Request: POST https://api.openai.com/v1/completions "HTTP/1.1 200 OK"
+2024-05-30 23:41:52 [ERROR] Pipeline failed on step 3: No code found in the response
+2024-05-30 23:42:03 [INFO] Question: How many entries do we have?
+2024-05-30 23:42:03 [INFO] Running PandasAI with langchain_openai LLM...
+2024-05-30 23:42:03 [INFO] Prompt ID: dcd14d99-4264-497c-8d61-8bdc19511d99
+2024-05-30 23:42:03 [INFO] Executing Pipeline: GenerateChatPipeline
+2024-05-30 23:42:03 [INFO] Executing Step 0: ValidatePipelineInput
+2024-05-30 23:42:03 [INFO] Executing Step 1: CacheLookup
+2024-05-30 23:42:03 [INFO] Executing Step 2: PromptGeneration
+2024-05-30 23:42:03 [INFO] Using prompt: <dataframe>
+dfs[0]:10406x22
+ORDERNUMBER,QUANTITYORDERED,DEALSIZE,ORDERLINENUMBER,SALES,ORDERDATE,STATUS,QTR_ID,MONTH_ID,YEAR_ID,PRODUCTLINE,MSRP,PRODUCTCODE,CUSTOMERNAME,PHONE,ADDRESSLINE1,ADDRESSLINE2,CITY,STATE,POSTALCODE,COUNTRY,TERRITORY
+10145.0,35.0,,,5756.52,,In Process,QTR_ID,,,Classic Cars,118,,"Dragon Souveniers, Ltd.",0033383230,11328 Douglas Av.,,Newark,,50553,Japan,
+,20.0,Small,11.0,,4/8/2005 0:00,,,10.0,2003,,MSRP,PRODUCTCODE,Gift Depot Inc.,6698603660,,Level 15,Torino,Osaka,44000,UK,Japan
+10126.0,,Large,12.0,4860.24,11/6/2003 0:00,Disputed,2,7.0,YEAR_ID,PRODUCTLINE,,S10_4698,,2089168840,9408 Furth Circle,ADDRESSLINE2,,Tokyo,,,TERRITORY
+</dataframe>
+
+
+
+
+Update this initial code:
+```python
+# TODO: import the required dependencies
+import pandas as pd
+
+# Write code here
+
+# Declare result var: 
+type (possible values "string", "number", "dataframe", "plot"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" }
+
+```
+
+
+
+### QUERY
+ How many entries do we have?
+
+Variable `dfs: list[pd.DataFrame]` is already declared.
+
+At the end, declare "result" variable as a dictionary of type and value.
+
+If you are asked to plot a chart, use "matplotlib" for charts, save as png.
+
+
+Generate python code and return full updated code:
+2024-05-30 23:42:03 [INFO] Executing Step 3: CodeGenerator
+2024-05-30 23:42:07 [INFO] HTTP Request: POST https://api.openai.com/v1/completions "HTTP/1.1 200 OK"
+2024-05-30 23:42:07 [ERROR] Pipeline failed on step 3: No code found in the response
+2024-05-30 23:54:12 [INFO] Question: /usr/local/bin/python3 /Users/suryaganesan/vscode/ml/projects/reporter/fix/fix.py
+2024-05-30 23:54:12 [INFO] Running PandasAI with langchain_openai LLM...
+2024-05-30 23:54:12 [INFO] Prompt ID: 7baa8dad-672a-4bf1-9761-edb749a5a6ca
+2024-05-30 23:54:12 [INFO] Executing Pipeline: GenerateChatPipeline
+2024-05-30 23:54:12 [INFO] Executing Step 0: ValidatePipelineInput
+2024-05-30 23:54:12 [INFO] Executing Step 1: CacheLookup
+2024-05-30 23:54:12 [INFO] Executing Step 2: PromptGeneration
+2024-05-30 23:54:12 [INFO] Using prompt: <dataframe>
+dfs[0]:10406x22
+ORDERNUMBER,QUANTITYORDERED,DEALSIZE,ORDERLINENUMBER,SALES,ORDERDATE,STATUS,QTR_ID,MONTH_ID,YEAR_ID,PRODUCTLINE,MSRP,PRODUCTCODE,CUSTOMERNAME,PHONE,ADDRESSLINE1,ADDRESSLINE2,CITY,STATE,POSTALCODE,COUNTRY,TERRITORY
+10145.0,35.0,,,5756.52,,In Process,QTR_ID,,,Classic Cars,118,,"Dragon Souveniers, Ltd.",0033383230,11328 Douglas Av.,,Newark,,50553,Japan,
+,20.0,Small,11.0,,4/8/2005 0:00,,,10.0,2003,,MSRP,PRODUCTCODE,Gift Depot Inc.,6698603660,,Level 15,Torino,Osaka,44000,UK,Japan
+10126.0,,Large,12.0,4860.24,11/6/2003 0:00,Disputed,2,7.0,YEAR_ID,PRODUCTLINE,,S10_4698,,2089168840,9408 Furth Circle,ADDRESSLINE2,,Tokyo,,,TERRITORY
+</dataframe>
+
+
+
+
+Update this initial code:
+```python
+# TODO: import the required dependencies
+import pandas as pd
+
+# Write code here
+
+# Declare result var: 
+type (possible values "string", "number", "dataframe", "plot"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" }
+
+```
+
+
+
+### QUERY
+ /usr/local/bin/python3 /Users/suryaganesan/vscode/ml/projects/reporter/fix/fix.py
+
+Variable `dfs: list[pd.DataFrame]` is already declared.
+
+At the end, declare "result" variable as a dictionary of type and value.
+
+If you are asked to plot a chart, use "matplotlib" for charts, save as png.
+
+
+Generate python code and return full updated code:
+2024-05-30 23:54:12 [INFO] Executing Step 3: CodeGenerator
+2024-05-30 23:54:14 [INFO] HTTP Request: POST https://api.openai.com/v1/completions "HTTP/1.1 200 OK"
+2024-05-30 23:54:14 [ERROR] Pipeline failed on step 3: No code found in the response
+2024-05-31 00:15:16 [INFO] Question: How many sheets do we have?
+2024-05-31 00:15:17 [INFO] Running PandasAI with langchain_openai LLM...
+2024-05-31 00:15:17 [INFO] Prompt ID: b6070068-bc8f-464a-86da-87c7f16b017d
+2024-05-31 00:15:17 [INFO] Executing Pipeline: GenerateChatPipeline
+2024-05-31 00:15:17 [INFO] Executing Step 0: ValidatePipelineInput
+2024-05-31 00:15:17 [INFO] Executing Step 1: CacheLookup
+2024-05-31 00:15:17 [INFO] Executing Step 2: PromptGeneration
+2024-05-31 00:15:17 [INFO] Using prompt: <dataframe>
+dfs[0]:10406x22
+ORDERNUMBER,QUANTITYORDERED,DEALSIZE,ORDERLINENUMBER,SALES,ORDERDATE,STATUS,QTR_ID,MONTH_ID,YEAR_ID,PRODUCTLINE,MSRP,PRODUCTCODE,CUSTOMERNAME,PHONE,ADDRESSLINE1,ADDRESSLINE2,CITY,STATE,POSTALCODE,COUNTRY,TERRITORY
+,50.0,Small,,2904.44,5/4/2004 0:00,,4.0,8.0,2004.0,Motorcycles,,PRODUCTCODE,,7410177454,4658 Baden Av.,Level 3,Burlingame,,3004,Singapore,TERRITORY
+10134,36.0,DEALSIZE,8,,11/13/2003 0:00,Shipped,1.0,,2005.0,,193.0,,Toys4GrownUps.com,+61 1524251313,,,,STATE,106-0032,,
+ORDERNUMBER,,,ORDERLINENUMBER,5512.32,,STATUS,,12.0,,PRODUCTLINE,95.0,S10_1949,West Coast Collectables Co.,1681445042,2-2-8 Roppongi,Level 6,Versailles,PA,,Australia,Japan
+</dataframe>
+<dataframe>
+dfs[1]:0x0
+
+</dataframe>
+
+
+
+
+Update this initial code:
+```python
+# TODO: import the required dependencies
+import pandas as pd
+
+# Write code here
+
+# Declare result var: 
+type (possible values "string", "number", "dataframe", "plot"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" }
+
+```
+
+
+
+### QUERY
+ How many sheets do we have?
+
+Variable `dfs: list[pd.DataFrame]` is already declared.
+
+At the end, declare "result" variable as a dictionary of type and value.
+
+If you are asked to plot a chart, use "matplotlib" for charts, save as png.
+
+
+Generate python code and return full updated code:
+2024-05-31 00:15:17 [INFO] Executing Step 3: CodeGenerator
+2024-05-31 00:15:19 [INFO] HTTP Request: POST https://api.openai.com/v1/completions "HTTP/1.1 200 OK"
+2024-05-31 00:15:19 [INFO] Prompt used:
+            
+<dataframe>
+dfs[0]:10406x22
+ORDERNUMBER,QUANTITYORDERED,DEALSIZE,ORDERLINENUMBER,SALES,ORDERDATE,STATUS,QTR_ID,MONTH_ID,YEAR_ID,PRODUCTLINE,MSRP,PRODUCTCODE,CUSTOMERNAME,PHONE,ADDRESSLINE1,ADDRESSLINE2,CITY,STATE,POSTALCODE,COUNTRY,TERRITORY
+,50.0,Small,,2904.44,5/4/2004 0:00,,4.0,8.0,2004.0,Motorcycles,,PRODUCTCODE,,7410177454,4658 Baden Av.,Level 3,Burlingame,,3004,Singapore,TERRITORY
+10134,36.0,DEALSIZE,8,,11/13/2003 0:00,Shipped,1.0,,2005.0,,193.0,,Toys4GrownUps.com,+61 1524251313,,,,STATE,106-0032,,
+ORDERNUMBER,,,ORDERLINENUMBER,5512.32,,STATUS,,12.0,,PRODUCTLINE,95.0,S10_1949,West Coast Collectables Co.,1681445042,2-2-8 Roppongi,Level 6,Versailles,PA,,Australia,Japan
+</dataframe>
+<dataframe>
+dfs[1]:0x0
+
+</dataframe>
+
+
+
+
+Update this initial code:
+```python
+# TODO: import the required dependencies
+import pandas as pd
+
+# Write code here
+
+# Declare result var: 
+type (possible values "string", "number", "dataframe", "plot"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" }
+
+```
+
+
+
+### QUERY
+ How many sheets do we have?
+
+Variable `dfs: list[pd.DataFrame]` is already declared.
+
+At the end, declare "result" variable as a dictionary of type and value.
+
+If you are asked to plot a chart, use "matplotlib" for charts, save as png.
+
+
+Generate python code and return full updated code:
+            
+2024-05-31 00:15:19 [INFO] Code generated:
+            ```
+            # TODO: import the required dependencies
+import pandas as pd
+
+# Get number of sheets in dfs list
+num_sheets = len(dfs)
+
+# Declare result var
+result = {"type": "string", "value": f"There are {num_sheets} sheets in the dfs list."}
+            ```
+            
+2024-05-31 00:15:19 [INFO] Executing Step 4: CachePopulation
+2024-05-31 00:15:19 [INFO] Executing Step 5: CodeCleaning
+2024-05-31 00:15:19 [INFO] 
+Code running:
+```
+num_sheets = len(dfs)
+result = {'type': 'string', 'value': f'There are {num_sheets} sheets in the dfs list.'}
+        ```
+2024-05-31 00:15:19 [INFO] Executing Step 6: CodeExecution
+2024-05-31 00:15:19 [INFO] Executing Step 7: ResultValidation
+2024-05-31 00:15:19 [INFO] Answer: {'type': 'string', 'value': 'There are 2 sheets in the dfs list.'}
+2024-05-31 00:15:19 [INFO] Executing Step 8: ResultParsing
+2024-05-31 00:16:14 [INFO] Question: How many empty cells do we have?
+2024-05-31 00:16:14 [INFO] Running PandasAI with langchain_openai LLM...
+2024-05-31 00:16:14 [INFO] Prompt ID: 668fcb0c-0e26-42ac-b965-0d48a6f9583a
+2024-05-31 00:16:14 [INFO] Executing Pipeline: GenerateChatPipeline
+2024-05-31 00:16:14 [INFO] Executing Step 0: ValidatePipelineInput
+2024-05-31 00:16:14 [INFO] Executing Step 1: CacheLookup
+2024-05-31 00:16:14 [INFO] Executing Step 2: PromptGeneration
+2024-05-31 00:16:14 [INFO] Using prompt: <dataframe>
+dfs[0]:10406x22
+ORDERNUMBER,QUANTITYORDERED,DEALSIZE,ORDERLINENUMBER,SALES,ORDERDATE,STATUS,QTR_ID,MONTH_ID,YEAR_ID,PRODUCTLINE,MSRP,PRODUCTCODE,CUSTOMERNAME,PHONE,ADDRESSLINE1,ADDRESSLINE2,CITY,STATE,POSTALCODE,COUNTRY,TERRITORY
+,50.0,Small,,2904.44,5/4/2004 0:00,,4.0,8.0,2004.0,Motorcycles,,PRODUCTCODE,,7410177454,4658 Baden Av.,Level 3,Burlingame,,3004,Singapore,TERRITORY
+10134,36.0,DEALSIZE,8,,11/13/2003 0:00,Shipped,1.0,,2005.0,,193.0,,Toys4GrownUps.com,+61 1524251313,,,,STATE,106-0032,,
+ORDERNUMBER,,,ORDERLINENUMBER,5512.32,,STATUS,,12.0,,PRODUCTLINE,95.0,S10_1949,West Coast Collectables Co.,1681445042,2-2-8 Roppongi,Level 6,Versailles,PA,,Australia,Japan
+</dataframe>
+<dataframe>
+dfs[1]:0x0
+
+</dataframe>
+
+
+
+
+Update this initial code:
+```python
+# TODO: import the required dependencies
+import pandas as pd
+
+# Write code here
+
+# Declare result var: 
+type (possible values "string", "number", "dataframe", "plot"). Examples: { "type": "string", "value": f"The highest salary is {highest_salary}." } or { "type": "number", "value": 125 } or { "type": "dataframe", "value": pd.DataFrame({...}) } or { "type": "plot", "value": "temp_chart.png" }
+
+```
+
+
+
+### QUERY
+ How many empty cells do we have?
+
+Variable `dfs: list[pd.DataFrame]` is already declared.
+
+At the end, declare "result" variable as a dictionary of type and value.
+
+If you are asked to plot a chart, use "matplotlib" for charts, save as png.
+
+
+Generate python code and return full updated code:
+2024-05-31 00:16:14 [INFO] Executing Step 3: CodeGenerator
+2024-05-31 00:16:16 [INFO] HTTP Request: POST https://api.openai.com/v1/completions "HTTP/1.1 200 OK"
+2024-05-31 00:16:16 [ERROR] Pipeline failed on step 3: No code found in the response

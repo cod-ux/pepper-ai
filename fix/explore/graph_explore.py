@@ -82,48 +82,6 @@ analyst_chain = analyst_prompt | llm
 
 # Node functions
 
-def plan_steps(state: GraphState):
-    messages = state["messages"]
-    past_tasks = state["past_tasks"]
-    past_execs = state["past_execs"]
-    reflect = state["reflect"]
-    error = state["error"]
-    iteration = state["iterations"]
-    past_tasks = []
-    reflect = ''
-
-    if error == "yes":
-        messages += [("system", f"Now I should try again to recreate a plan that doesn't without producing any errors, if the error was due to the plan. Let's rewrite a new plan if necessary.")]
-
-    if iteration == 0:
-        if len(past_execs) > 4:
-            exec_string = ''
-            for execs in past_execs[-4:0]:
-                req = execs["question"]
-                table = execs["answer"]
-                exec_string += f"\nPast Question: {req}\Answer: {table}\n"
-            messages += [("user", f"These are the past 4 questions from me, the user, along with the answers you provided: \n{exec_string}")]
-
-        if len(past_execs) < 4:
-            exec_string = ''
-            for execs in past_execs:
-                req = execs["question"]
-                table = execs["answer"]
-                exec_string += f"\Past Question: {req}\Answer: {table}\n"
-            messages += [("system", f"These are the past few questions from me, the user, along with the answers you provided: \n{exec_string}")]
-
-
-    planner_prompt = planner_template()
-    planner = create_structured_output_runnable(Plan, ChatOpenAI(model="gpt-4o", temperature=0, streaming=True), planner_prompt)
-
-    print("\nPlanning step begins...\n")
-
-    plan = planner.invoke({"messages": messages})
-
-    messages += [('system', f"For the user questions, this is the list of tasks I need to complete to find the answer: \n{plan.tasks}")]
-    
-    return {"tasks": plan.tasks, "messages": messages, "past_tasks": past_tasks, "reflect": reflect, "current_task": f"Plan completed..."}
-
 # Function: Write code
 
 def generate_code(state: GraphState):
@@ -262,14 +220,12 @@ print("\n Code successfully executed.\n")
 
 wf = StateGraph(GraphState)
 
-wf.add_node("planner", plan_steps)
 wf.add_node("generate", generate_code)
 wf.add_node("check_code", check_code)
 wf.add_node("reflect_code", reflect_code)
 wf.add_node("write_answer", write_answer)
 
-wf.set_entry_point("planner")
-wf.add_edge("planner", "generate")
+wf.set_entry_point("generate")
 wf.add_edge("generate", "check_code")
 wf.add_conditional_edges(
     "check_code",
