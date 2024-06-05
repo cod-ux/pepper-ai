@@ -31,22 +31,23 @@ files = list_files(directory)
 
 
 page_list = []
-
 for file_path in files:
     load = PyPDFLoader(file_path)
-    pages = load.load_and_split()
-    page_list += pages
+    pages = load.load()
+    content_holder = ''
+    for page in pages:
+        content_holder += page.page_content
+        content_holder += "\n\n\n --- \n\n\n"
+    print(content_holder)
+    page_list.append(content_holder)
 
-x = 10
 
-print(page_list[x])
-print(len(page_list[x].page_content))
+#print(len(page_list[0].page_content))
+print(type(page_list[0]))
 
-
-for i in page_list:
-    pages
 
 print("No. of docs: ", len(page_list))
+print("Length of doc: ", len(page_list[0]))
 
 ## Embed and export text_chunks to faiss_index - For im_rag retrieval
 
@@ -56,7 +57,8 @@ print("Embedding chunks and exporting to faiss...")
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
 path = "/Users/suryaganesan/vscode/ml/projects/reporter/"
 
-db = FAISS.from_documents(page_list, embeddings)
+#db = FAISS.from_documents(page_list, embeddings)
+db = FAISS.from_texts(page_list, embeddings)
 db.save_local(path+'faiss_index')
 
 print("...Program terminated")

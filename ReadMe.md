@@ -141,4 +141,53 @@ Please try again to generate the visual comparison.
 5. Temporarily disable past execs being added to message
 6. Ask write_answer to be a business analyst and answer business like questions.
 
-Provide a better description of the dataset:
+**2. Manipulate**
+
+- Delete the last column (Works) 10/10
+- Create a new sheet (Works) 10/10
+- VLOOKUP based on ID column 
+- Create a new column for ‘x’
+- Delete rows that are highlighted in grey
+- Highlight columns
+- Delete rows and columns conditionally (7/10)
+- Handle multiple
+
+Iteration 00:
+- Delete columns
+- Create new sheet
+- Vlookup deal size from sheet1 based on Unique ID
+- Fill empty cells with n/a
+
+Iteration 01: Changed to gpt-3.5-turbo
+- Delete last column
+- Create a Unique ID column
+- Delete cells in unique ID after 99, if unique id is an even number
+(Failed the second iteration, could've passed if first iteration wasn't so simple and there was a third iteration)
+- Delete all rows after below 99 in Unique ID
+- Copy the first three columns to a new sheet
+(Copied all columns to a new sheet)
+- Vlookup
+(Nope, but partially because there were too many empty rows)
+- Note: But gpt3.5 could be much faster if it can generate accurate code without getting errors. Goal is to minimize errors and plan & generate code faster.
+
+Iteration 02: Changed to gpt-3.5-turbo-instruct, removed review
+- Note: Asked to import all necessary libraries
+- Delete columns
+
+Iteration 03: Remove Plan, Add python code template frompandas, removed retrievals
+- Fill the unique ID column in “Test 1” with random unique numbers
+- Fill empty cells with n/a
+The errors being generated, are mostly related to outdated code and not related to improving the prompt. Sometimes it is also about not recognizing the variables and tabular structure.
+
+Iteration 04: Add Plan to preliminary questions and provide more variables
+- Create a new column called Unique ID with random 4 digit numbers
+Works as long as the preliminary questions aren't bull shit
+
+Iteration 05: Change model to GPT4o, reduce tokens in Plan
+- Create a new column that can be used as a Unique ID with four digit numbers
+- Unhighlight cells
+- Fill all empty cells with n/a
+- Delete all rows below 99
+(Deleting empty cells below takes a lot of time)
+(Should try vlookup)
+
