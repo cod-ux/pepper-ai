@@ -6,7 +6,8 @@ from openpyxl import load_workbook
 from openai import OpenAI
 
 from utils import (
-    query_llm_gpt4,
+    query_llm_gpt4_code,
+    query_llm_gpt4_plan,
     query_llm_gpt35,
     query_llm_gpt35_chat, 
     extract_code_from_llm,
@@ -64,8 +65,32 @@ Here is how the first few rows of those sheets look like: \n
 ### VARIABLES REQUIRED
 
 """
-    response = query_llm_gpt4(user_prompt)
-    print(f"Unaltered LLM response: \n{response}")
+
+    user_prompt_2 = f"""
+### GOAL
+Improve the provided user request by identifying objects like column name, sheet name, position, rows, etc... and \n
+rephrease it to specify them. Provide the improved user request and a list of required variables to write a program for executing the following user request.\n
+If the variable values are known, assign those values. If they are to be calculated during run time, assign '#To be calculated' for the variable values\n 
+Include any formulas to write as variables too. Don't fill up values your not sure for the formulas. Just leave a placeholder.\n
+Format it to by first giving the rephrased user request. Following that provide the list of variables.
+ONLY provide the rephrased user request and list of variables. No explanation is needed.
+
+### USER REQUEST
+{request}
+
+### EXCEL DATA SAMPLE
+Note: This is only a sample data, there are more rows in these sheets than being shown here.
+
+There are {len(dfs)} sheets in the excel file saved at {source}. \n
+Here is how the first few rows of those sheets look like: \n
+{head_view}
+
+### FINAL USER REQUEST
+
+"""
+
+    response = query_llm_gpt4_plan(user_prompt_2)
+    print(f"Unaltered LLM response: \n{response.content}")
     plan = response.content
 
     return plan
@@ -79,21 +104,14 @@ def generate_code(request, source, additional):
     for i, df in enumerate(dfs):
         head_view += f"\nSheet {i}: {sheet_names[i]}\nSheet head:\n{df.head(3)}\n\n"
 
-    user_prompt = f"""
-### USER REQUEST
-Write code to execute this user request: {request}
+    user_prompt = f"""    
+
+Write code to execute the following user request: \n\n{additional}
 
 ### INSTRUCTIONS
-DONT USE PANDAS
-ONLY use openpyxlmodule for loading excel data
 Import this file in your code and save the final output again in the same name as this file: {source}. 
-Provide ONLY the python source code as a response.
-Import ALL Necessary libraries in the code.
 Use the excel sheet information given below to identify sheet names and column names for variables in the code. 
 Explicitly specify sheet names and column names instead of relying on sheet and column order based on given info on the excel sheets below.
-
-### ADDITIONAL INFORMATION
-{additional}
 
 ### EXCEL DATA SAMPLE
 --- Excel Sheet head views ---
@@ -107,7 +125,7 @@ ONLY provide the executable code. You will be penalised if you provide anything 
 Code Solution:
 
 """
-    response = query_llm_gpt4(user_prompt)
+    response = query_llm_gpt4_code(user_prompt)
     code = extract_code_from_llm(response.content)
 
 
@@ -141,7 +159,7 @@ ONLY RETURN CODE AS OUTPUTS, NO NEED FOR EXPLANATIONS.
     return python_respone
 
 def refresh_code(request, error, source, old_code, additional):
-    code_example = retriever.invoke(f"Find a python code example relating to: {request}")[0].page_content
+    #code_example = retriever.invoke(f"Find a python code example relating to: {request}")[0].page_content
     
     user_prompt = f"""
 This was the user request: {request}
@@ -157,14 +175,13 @@ Additional information about excel file:
 Instructions to follow:
 DONT USE PANDAS
 If there is no error return the original code and save the file as {source}.
-Try to write python code, over relying on excel formulas.
 Prefer to use move_range() function if the user asks to move columns.
 Explicitly specify sheet names and column names instead of relying on sheet and column order based on given info on the excel sheets below.
 
 ONLY RETURN CODE AS OUTPUTS, NO NEED FOR EXPLANATIONS.
     """
 
-    response = query_llm_gpt4(user_prompt)
+    response = query_llm_gpt4_code(user_prompt)
     code = extract_code_from_llm(response.content)
 
     return code

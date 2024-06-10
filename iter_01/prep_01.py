@@ -40,8 +40,8 @@ def load_sheets_to_dfs(file_path):
 
 
 header_ph = st.empty()
-header_ph.markdown( "<h3 style='text-align: center;'>Command AI: Spend less time preparing your data for analysis</h3>", unsafe_allow_html=True)
-st.markdown("<h3> </h3>", unsafe_allow_html=True)
+header_ph.markdown( "<h3 style='text-align: center;'>Pepper, the Data Explorer</h3>", unsafe_allow_html=True)
+st.markdown( "<h6 style='text-align: center;'>Spend less time preparing your data for analysis</h6>", unsafe_allow_html=True)
 st.markdown("<h3> </h3>", unsafe_allow_html=True)
 uploader_ph = st.empty()
 cache_clear = False
@@ -90,38 +90,32 @@ if st.session_state.file_path is not None:
             print("\n------ B4 ------\n")
             print(f"Uploaded file says: {st.session_state.uploaded_file}")
             print(f"File path says: {st.session_state.file_path}")
-            col1, col2 = st.columns([5,2])
 
             st.sidebar.title("Side Panel")
 
-            with col2:
-                st.markdown("<h5>Chat Box: </h5>", unsafe_allow_html=True)
-                for message in st.session_state.messages:
-                    with st.chat_message(message["role"]):
-                        st.write(message["content"])
+            
+            
 
-            with col1:
-                st.markdown("<h5>Table view: </h5>", unsafe_allow_html=True)
+
+            st.markdown(f"<h5>{os.path.basename(st.session_state.file_path)}: </h5>", unsafe_allow_html=True)
                 
             
-                dfs, sheets = load_sheets_to_dfs(st.session_state.file_path)
+            dfs, sheets = load_sheets_to_dfs(st.session_state.file_path)
 
-                select_sheet_ph = st.sidebar.empty()
+            select_sheet_ph = st.sidebar.empty()
 
-                current_sheet = select_sheet_ph.radio("Select sheets", sheets)
+            current_sheet = select_sheet_ph.radio("Select sheets", sheets)
 
-                current_table_placeholder = st.empty()
+            current_table_placeholder = st.empty()
 
-                with current_table_placeholder.container():
-                    st.dataframe(dfs[sheets.index(current_sheet)])
+            with current_table_placeholder.container(height=500):
+                st.dataframe(dfs[sheets.index(current_sheet)], height=600)
 
     #     Chat box
-
             request = st.chat_input("Enter your command...")
 
-            with col2:
-            
-                if request:
+
+            if request:
                     print("\n------ B5 ------\n")
                     st.session_state.messages.append({"role": "human", "content": request})
                     with st.chat_message("human"):
@@ -129,7 +123,7 @@ if st.session_state.file_path is not None:
 
 #     Command execution
 
-                if st.session_state.messages[-1]["role"] != "ai":
+            if st.session_state.messages[-1]["role"] != "ai":
                     print("\n------ B6 ------\n")
                     if request:
                         with st.chat_message("ai"):
@@ -137,15 +131,14 @@ if st.session_state.file_path is not None:
                                 print("\n------ B7 ------\n")
                                 st.session_state.state_stack.append(get_binary(st.session_state.file_path))
                                 test = save_sheets(st.session_state.file_path)
-                                st.write(f"Saving and closing sheet: {test}")
-                                st.write("Creating a plan...")
+                                st.caption("Creating a plan...")
                                 print("Creating a plan...\n")
                                 additional = create_plan(request, st.session_state.file_path)
 
                                 #st.write(f"The plan: \n{plan}")
                                 #print("The plan: \n", plan)
 
-                                st.write("Generating script...")
+                                st.caption("Generating script...")
                                 final_script = generate_code(request, st.session_state.file_path, additional)
 
                                 #st.code(f"Code generated: \n {script_generated}")
@@ -160,18 +153,18 @@ if st.session_state.file_path is not None:
                                 #print("Script reviewed: \n", final_script)
 
                                 try:
-                                    st.write("\n\nInitiating code execution...")
+                                    st.caption("\n\nInitiating code execution...")
                                     exec(final_script)
                                     status = save_sheets(st.session_state.file_path)
-                                    st.write(f"Saving changes: {status}")
+                                    st.write("...Request executed")
                                     message = {"role": "ai", "content": f"Successfully executed with: \n{final_script}"}
                                     print("\n------ B8 ------\n")
                                     #st.session_state.messages.append(message)
                                     cache_clear = True
 
                                 except Exception as e:
-                                    st.write(f"Error: {e}")
-                                    st.write("Analysing the error....")
+                                    st.caption(f"Error: {e}")
+                                    st.caption("Analysing the error....")
                                     print("Got error: ", e)
 
                                     new_code = refresh_code(request, e, st.session_state.file_path, final_script, additional)
@@ -179,17 +172,17 @@ if st.session_state.file_path is not None:
                                     print("New code: ", new_code)
 
                                     try:
-                                        st.write("Initializing new refreshed code....")
+                                        st.caption("Initializing new refreshed code....")
                                         exec(new_code)
                                         status = save_sheets(st.session_state.file_path)
-                                        st.write(f"Saving changes: {status}")
+                                        st.write("Request Executed")
                                         message = {"role": "ai", "content": f"Successfully executed with: \n{str(final_script)}"}
                                         print("\n------ B8 ------\n")
                                         #st.session_state.messages.append(message)
                                         cache_clear = True
 
                                     except Exception as e2:
-                                        st.write(f"New Error: {e2}")
+                                        st.caption(f"New Error: {e2}")
                                         message = {"role": "ai", "content": f"Execution unsuccessful due to error: \n{e2}"}
                                         #st.session_state.messages.append(message)
                                         print("Got a new error: ", e2)
@@ -206,10 +199,6 @@ if cache_clear:
         st.cache_data.clear()
         current_sheet = None
 
-        with col2:
-            with st.chat_message("ai"):
-                st.write("Cache data should be cleared")
-
         dfs, sheets = load_sheets_to_dfs(st.session_state.file_path)
 
         print(dfs[0])
@@ -223,8 +212,8 @@ if cache_clear:
                 
         current_sheet = select_sheet_ph.radio("Select sheet",sheets)
 
-        with current_table_placeholder.container():
-            st.dataframe(dfs[sheets.index(current_sheet)])
+        with current_table_placeholder.container(height=500):
+            st.dataframe(dfs[sheets.index(current_sheet)], height=600)
 
         cache_clear = False
 
@@ -240,6 +229,5 @@ if st.session_state.file_path:
                 file_name = os.path.basename(st.session_state.file_path),
                 mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
-            st.sidebar.button("Re-upload", on_click=lambda: re_upload())
                   
 

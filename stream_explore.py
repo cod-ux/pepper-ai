@@ -5,7 +5,7 @@ import pandas as pd
 from temp_explore import format_request
 from graph_explore import explore
 
-source = '/Users/suryaganesan/vscode/ml/projects/reporter/sales_data_copy.xlsx'
+source = '/Users/suryaganesan/vscode/ml/projects/reporter/excel_source/sales_data_copy.xlsx'
 
 if 'key' not in st.session_state:
     st.session_state.key = 'value'

@@ -188,6 +188,45 @@ Iteration 05: Change model to GPT4o, reduce tokens in Plan
 - Unhighlight cells
 - Fill all empty cells with n/a
 - Delete all rows below 99
+- highlight all empty cells in yellow before the 100th row
+- Create a unique ID column as the first column from the left with random seven digit numbers
 (Deleting empty cells below takes a lot of time)
 (Should try vlookup)
 
+Iteration 06: Improve Prompt + Required variables
+- VLOOKUP Works well
+- Highlighting conditionally
+- Create Unique ID column
+- Works in writing vlookup formulas, if statements, arithmetics and more
+(Has trouble with answering questions by calculating in new sheets)
+(Has trouble VLOOKing UP multiple columns to new sheets)
+
+Use cases:
+- Cleaning
+- Filtering entries by asking to make new sheet
+- VLookups
+
+## UI:
+
+### Iter 01: Copywriting
+- Change the name of agent: Data explorer (done)
+- Name of excel file on top of the table (done)
+- Remove chatbox and messages, and change it to a processor interface instead of a chat one (done)
+
+Should we do single page with upload area in side bar, or, Upload page + processing page with undo, export and re-upload in bottom with full page table view
+
+One page:
+- Single page web app, no complication shifting between pages (Can still close sidebar to get full screen view)
+
+Two page:
+- More screen space for dataframe
+
+### Iter 02: Move uploaded file to sidebar
+- When uploaded file is removed stop showing dfs and wait for re-uploading
+- Show empty dataframe, sidebar and chat command when uploaded file is empty
+
+Iter 03: Re-upload - either remove or fix
+
+
+
+Next iter: Multi page, Re-upload and remove uploaded file

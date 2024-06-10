@@ -18,8 +18,46 @@ client = OpenAI()
 pd.set_option('display.max_columns', None)
 pd.set_option('display.expand_frame_repr', False)
 
-def query_llm_gpt4(user_msg, client=client):
+def query_llm_gpt4_plan(user_msg, client=client):
     messages = []
+
+    messages.append(
+        {
+            "role": "system",
+            "content": "You are an expert in understanding and clarifying requests from the user regarding excel operations. If the user request is related to creating new cells and columns, prefer to write excel formulas through the python code"
+        }
+    )
+
+    messages.append(
+        {
+            "role": "user",
+            "content": user_msg
+        }
+    )
+
+    response = client.chat.completions.create(
+        model="gpt-4o",
+        messages=messages
+    ).choices[0].message
+
+    return response
+
+def query_llm_gpt4_code(user_msg, client=client):
+    messages = []
+
+    messages.append(
+        {
+            "role": "system",
+            "content": """
+You are an expert in writing python code from natural language requests to execute excel tasks. \n
+You write python code to execute the user rquest eith the openpyxl library. \n
+You can also try to write excel formulas in the sheets with your code when the request is related to creating new columns and it is simpler to do so than writing code.\n
+ONLY use openpyxl module for loading excel data.
+Provide ONLY the python source code as a response.
+Import ALL Necessary libraries in the code.
+"""
+        }
+    )
 
     messages.append(
         {
