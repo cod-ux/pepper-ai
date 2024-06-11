@@ -3,7 +3,7 @@ import pandas as pd
 from temp_explore import format_request
 
 
-source = '/Github/reporter/excel_source/sales_data_copy.xlsx'
+source = '/home/ubuntu/Github/reporter/excel_source/sales_data_copy.xlsx'
 state = {"request": "Make me a graph", "source": source}
 
 formatted = format_request(state["request"], state["source"])

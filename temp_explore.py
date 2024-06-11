@@ -17,7 +17,7 @@ from utils import (
 
 
 
-secrets = "/Github/reporter/secrets.toml"
+secrets = "/home/ubuntu/Github/reporter/secrets.toml"
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 
 
@@ -96,7 +96,7 @@ If the user questions is instead a request to change any source data from the ex
 Remember that you are in a streamlit envirnonment, so follow the guidelines when returning the results:
 - ALWAYS do return the python code to import pandas, even if code is not required. \n
 - ALWAYS dp print the answer that you find at the end of the program. This will provide the user with the answer to their question. \n
-- ALWAYS do save any graphs you make with seaborn as images in the folder "/Github/reporter/ph_images" at the end of the program. This will provide the user with the answer to their question. \n
+- ALWAYS do save any graphs you make with seaborn as images in the folder "/home/ubuntu/Github/reporter/ph_images" at the end of the program. This will provide the user with the answer to their question. \n
 - ALWAYS do write code to create some sort of a graph whenever the user asks for wrtiting a graph. \n
 
 Here is the user's original question, progress on executing previous tasks, and the current task you need to write code to execute. Write code to execute the last retrieved task from the plan: """

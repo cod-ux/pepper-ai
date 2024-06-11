@@ -11,7 +11,7 @@ import pygsheets
 import shutil
 
 # Source file
-source = "/Github/reporter/sales_data_copy.xlsx"
+source = "/home/ubuntu/Github/reporter/sales_data_copy.xlsx"
 
 # Destination directory
 move_location = "/Users/suryaganesan/library/containers/com.microsoft.excel/data/"
