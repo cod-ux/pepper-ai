@@ -19,6 +19,8 @@ from streamlit_utils import copy_excel_locally, save_sheets, handle_duplicate_co
 
 st.set_page_config(layout="wide")
 
+print("\nApp has reached here...")
+
 #session = px.launch_app()
 #OpenAIInstrumentor().instrument()
 
