@@ -21,7 +21,7 @@ from langchain_openai.embeddings import OpenAIEmbeddings
 
 source = "sales_data_sample.xlsx"
 source_path = "sales_data_sample.xlsx"
-secrets = "/Users/suryaganesan/Documents/GitHub/Replicate/secrets.toml"
+secrets = "/Github/reporter/secrets.toml"
 
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 
@@ -31,7 +31,7 @@ client = OpenAI()
 # Code docs RAG
 
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-path = "/Users/suryaganesan/vscode/ml/projects/reporter/faiss_index"
+path = "/Github/reporter/faiss_index"
 db = FAISS.load_local(path, embeddings, allow_dangerous_deserialization=True)
 
 retriever = db.as_retriever(search_kwargs={"k": 1})

@@ -27,7 +27,7 @@ from temp_explore import (
 
 # OpenAI init.
 
-secrets = "/Users/suryaganesan/Documents/GitHub/Replicate/secrets.toml"
+secrets = "/Github/reporter/secrets.toml"
 github_secrets = "secrets.toml"
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 llm = ChatOpenAI(temperature=0, model="gpt-4o")
@@ -289,7 +289,7 @@ print("\nApp starts work here....\n")
 
 #req = "reate a graph in the newsheet added based on the data in the first sheet. If you can't make the graph, print not possible."
 
-source = '/Users/suryaganesan/vscode/ml/projects/reporter/excel_source/sales_data_copy.xlsx'
+source = '/Github/reporter/excel_source/sales_data_copy.xlsx'
 
  
 #response = app.ainvoke({"messages": [('user', formatted_req)], "request": req, "source_path": source, "max_iterations": 30, "iterations": 0})

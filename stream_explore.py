@@ -5,7 +5,7 @@ import pandas as pd
 from temp_explore import format_request
 from graph_explore import explore
 
-source = '/Users/suryaganesan/vscode/ml/projects/reporter/excel_source/sales_data_copy.xlsx'
+source = '/Github/reporter/excel_source/sales_data_copy.xlsx'
 
 if 'key' not in st.session_state:
     st.session_state.key = 'value'
@@ -20,7 +20,7 @@ if 'exec_steps' not in st.session_state:
     st.session_state.exec_steps = []
 
 request = st.chat_input("Enter your question...")
-img_folder = "/Users/suryaganesan/vscode/ml/projects/reporter/ph_images"
+img_folder = "/Github/reporter/ph_images"
 
 if request:
     print("\n------ B5 ------\n")

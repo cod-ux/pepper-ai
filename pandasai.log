@@ -260,7 +260,7 @@ result = {"type": "plot", "value": "sales_vs_year.png"}
             
 2024-04-21 15:11:05 [INFO] Executing Step 4: CachePopulation
 2024-04-21 15:11:05 [INFO] Executing Step 5: CodeCleaning
-2024-04-21 15:11:05 [INFO] Saving charts to /Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png
+2024-04-21 15:11:05 [INFO] Saving charts to /Github/reporter/exports/charts/temp_chart.png
 2024-04-21 15:11:05 [INFO] 
 Code running:
 ```
@@ -273,12 +273,12 @@ plt.ylabel('Total Sales')
 plt.grid(axis='y')
 plt.xticks(rotation=45)
 plt.tight_layout()
-plt.savefig('/Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png')
-result = {'type': 'plot', 'value': '/Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png'}
+plt.savefig('/Github/reporter/exports/charts/temp_chart.png')
+result = {'type': 'plot', 'value': '/Github/reporter/exports/charts/temp_chart.png'}
         ```
 2024-04-21 15:11:05 [INFO] Executing Step 6: CodeExecution
 2024-04-21 15:11:06 [INFO] Executing Step 7: ResultValidation
-2024-04-21 15:11:06 [INFO] Answer: {'type': 'plot', 'value': '/Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png'}
+2024-04-21 15:11:06 [INFO] Answer: {'type': 'plot', 'value': '/Github/reporter/exports/charts/temp_chart.png'}
 2024-04-21 15:11:06 [INFO] Executing Step 8: ResultParsing
 2024-04-21 15:11:36 [INFO] Question: Create a pivot chart with sales vs year_id
 2024-04-21 15:11:36 [INFO] Running PandasAI with openai LLM...
@@ -294,7 +294,7 @@ result = {'type': 'plot', 'value': '/Users/suryaganesan/vscode/ml/projects/repor
 2024-04-21 15:11:36 [INFO] Executing Step 4: CachePopulation
 2024-04-21 15:11:36 [INFO] Executing Step 4: Skipping...
 2024-04-21 15:11:36 [INFO] Executing Step 5: CodeCleaning
-2024-04-21 15:11:36 [INFO] Saving charts to /Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png
+2024-04-21 15:11:36 [INFO] Saving charts to /Github/reporter/exports/charts/temp_chart.png
 2024-04-21 15:11:36 [INFO] 
 Code running:
 ```
@@ -307,12 +307,12 @@ plt.ylabel('Total Sales')
 plt.grid(axis='y')
 plt.xticks(rotation=45)
 plt.tight_layout()
-plt.savefig('/Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png')
-result = {'type': 'plot', 'value': '/Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png'}
+plt.savefig('/Github/reporter/exports/charts/temp_chart.png')
+result = {'type': 'plot', 'value': '/Github/reporter/exports/charts/temp_chart.png'}
         ```
 2024-04-21 15:11:36 [INFO] Executing Step 6: CodeExecution
 2024-04-21 15:11:37 [INFO] Executing Step 7: ResultValidation
-2024-04-21 15:11:37 [INFO] Answer: {'type': 'plot', 'value': '/Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png'}
+2024-04-21 15:11:37 [INFO] Answer: {'type': 'plot', 'value': '/Github/reporter/exports/charts/temp_chart.png'}
 2024-04-21 15:11:37 [INFO] Executing Step 8: ResultParsing
 2024-04-21 15:12:04 [INFO] Question: Create a pivot chart in pandas with sales vs year_id
 2024-04-21 15:12:04 [INFO] Running PandasAI with openai LLM...
@@ -418,19 +418,19 @@ result = {"type": "plot", "value": "sales_vs_year_chart.png"}
             
 2024-04-21 15:12:07 [INFO] Executing Step 4: CachePopulation
 2024-04-21 15:12:07 [INFO] Executing Step 5: CodeCleaning
-2024-04-21 15:12:07 [INFO] Saving charts to /Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png
+2024-04-21 15:12:07 [INFO] Saving charts to /Github/reporter/exports/charts/temp_chart.png
 2024-04-21 15:12:07 [INFO] 
 Code running:
 ```
 dfs[0]['ORDERDATE'] = pd.to_datetime(dfs[0]['ORDERDATE'])
 pivot_table = pd.pivot_table(dfs[0], values='SALES', index='YEAR_ID', aggfunc='sum')
 pivot_chart = pivot_table.plot(kind='bar', title='Sales vs Year', xlabel='Year', ylabel='Total Sales')
-pivot_chart.get_figure().savefig('/Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png')
-result = {'type': 'plot', 'value': '/Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png'}
+pivot_chart.get_figure().savefig('/Github/reporter/exports/charts/temp_chart.png')
+result = {'type': 'plot', 'value': '/Github/reporter/exports/charts/temp_chart.png'}
         ```
 2024-04-21 15:12:07 [INFO] Executing Step 6: CodeExecution
 2024-04-21 15:12:07 [INFO] Executing Step 7: ResultValidation
-2024-04-21 15:12:07 [INFO] Answer: {'type': 'plot', 'value': '/Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png'}
+2024-04-21 15:12:07 [INFO] Answer: {'type': 'plot', 'value': '/Github/reporter/exports/charts/temp_chart.png'}
 2024-04-21 15:12:07 [INFO] Executing Step 8: ResultParsing
 2024-04-21 15:18:14 [INFO] Question: Create a pivot chart in pandas with sales vs year_id
 2024-04-21 15:18:14 [INFO] Running PandasAI with openai LLM...
@@ -446,19 +446,19 @@ result = {'type': 'plot', 'value': '/Users/suryaganesan/vscode/ml/projects/repor
 2024-04-21 15:18:15 [INFO] Executing Step 4: CachePopulation
 2024-04-21 15:18:15 [INFO] Executing Step 4: Skipping...
 2024-04-21 15:18:15 [INFO] Executing Step 5: CodeCleaning
-2024-04-21 15:18:15 [INFO] Saving charts to /Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png
+2024-04-21 15:18:15 [INFO] Saving charts to /Github/reporter/exports/charts/temp_chart.png
 2024-04-21 15:18:15 [INFO] 
 Code running:
 ```
 dfs[0]['ORDERDATE'] = pd.to_datetime(dfs[0]['ORDERDATE'])
 pivot_table = pd.pivot_table(dfs[0], values='SALES', index='YEAR_ID', aggfunc='sum')
 pivot_chart = pivot_table.plot(kind='bar', title='Sales vs Year', xlabel='Year', ylabel='Total Sales')
-pivot_chart.get_figure().savefig('/Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png')
-result = {'type': 'plot', 'value': '/Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png'}
+pivot_chart.get_figure().savefig('/Github/reporter/exports/charts/temp_chart.png')
+result = {'type': 'plot', 'value': '/Github/reporter/exports/charts/temp_chart.png'}
         ```
 2024-04-21 15:18:15 [INFO] Executing Step 6: CodeExecution
 2024-04-21 15:18:15 [INFO] Executing Step 7: ResultValidation
-2024-04-21 15:18:15 [INFO] Answer: {'type': 'plot', 'value': '/Users/suryaganesan/vscode/ml/projects/reporter/exports/charts/temp_chart.png'}
+2024-04-21 15:18:15 [INFO] Answer: {'type': 'plot', 'value': '/Github/reporter/exports/charts/temp_chart.png'}
 2024-04-21 15:18:15 [INFO] Executing Step 8: ResultParsing
 2024-04-21 15:18:17 [INFO] HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
 2024-04-21 15:18:17 [INFO] Clarification Questions:  [
@@ -516,7 +516,7 @@ Generate python code and return full updated code:
 2024-05-02 18:19:31 [INFO] Executing Step 3: CodeGenerator
 2024-05-02 18:19:32 [INFO] HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 401 Unauthorized"
 2024-05-02 18:19:32 [ERROR] Pipeline failed on step 3: Error code: 401 - {'error': {'message': 'Incorrect API key provided: sk-spVoC***************************************ufaR. You can find your API key at https://platform.openai.com/account/api-keys.', 'type': 'invalid_request_error', 'param': None, 'code': 'invalid_api_key'}}
-2024-05-02 18:19:58 [INFO] Question: /usr/local/bin/python3 /Users/suryaganesan/vscode/ml/projects/reporter/base.py
+2024-05-02 18:19:58 [INFO] Question: /usr/local/bin/python3 /Github/reporter/base.py
 2024-05-02 18:19:58 [INFO] Running PandasAI with openai LLM...
 2024-05-02 18:19:58 [INFO] Prompt ID: d8972dee-5dd2-4175-9fbd-76fb87443b19
 2024-05-02 18:19:58 [INFO] Executing Pipeline: GenerateChatPipeline
@@ -549,7 +549,7 @@ type (possible values "string", "number", "dataframe", "plot"). Examples: { "typ
 
 
 ### QUERY
- /usr/local/bin/python3 /Users/suryaganesan/vscode/ml/projects/reporter/base.py
+ /usr/local/bin/python3 /Github/reporter/base.py
 
 Variable `dfs: list[pd.DataFrame]` is already declared.
 
@@ -1259,7 +1259,7 @@ Generate python code and return full updated code:
 2024-05-30 23:42:03 [INFO] Executing Step 3: CodeGenerator
 2024-05-30 23:42:07 [INFO] HTTP Request: POST https://api.openai.com/v1/completions "HTTP/1.1 200 OK"
 2024-05-30 23:42:07 [ERROR] Pipeline failed on step 3: No code found in the response
-2024-05-30 23:54:12 [INFO] Question: /usr/local/bin/python3 /Users/suryaganesan/vscode/ml/projects/reporter/fix/fix.py
+2024-05-30 23:54:12 [INFO] Question: /usr/local/bin/python3 /Github/reporter/fix/fix.py
 2024-05-30 23:54:12 [INFO] Running PandasAI with langchain_openai LLM...
 2024-05-30 23:54:12 [INFO] Prompt ID: 7baa8dad-672a-4bf1-9761-edb749a5a6ca
 2024-05-30 23:54:12 [INFO] Executing Pipeline: GenerateChatPipeline
@@ -1292,7 +1292,7 @@ type (possible values "string", "number", "dataframe", "plot"). Examples: { "typ
 
 
 ### QUERY
- /usr/local/bin/python3 /Users/suryaganesan/vscode/ml/projects/reporter/fix/fix.py
+ /usr/local/bin/python3 /Github/reporter/fix/fix.py
 
 Variable `dfs: list[pd.DataFrame]` is already declared.
 

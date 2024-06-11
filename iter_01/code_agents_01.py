@@ -33,7 +33,7 @@ client = OpenAI()
 # Code docs RAG
 
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-path = "/Users/suryaganesan/vscode/ml/projects/reporter/faiss_index"
+path = "/Github/reporter/faiss_index"
 db = FAISS.load_local(path, embeddings, allow_dangerous_deserialization=True)
 
 retriever = db.as_retriever(search_kwargs={"k": 1})

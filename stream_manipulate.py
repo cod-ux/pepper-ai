@@ -5,7 +5,7 @@ import pandas as pd
 from temp_manipulate import format_request
 from graph_manipulate import manipulate
 
-source = '/Users/suryaganesan/vscode/ml/projects/reporter/sales_data_copy.xlsx'
+source = '/Github/reporter/sales_data_copy.xlsx'
 
 if 'key' not in st.session_state:
     st.session_state.key = 'value'

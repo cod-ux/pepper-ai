@@ -15,7 +15,7 @@ secrets = "/Users/suryaganesan/Documents/GitHub/Replicate/secrets.toml"
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 llm = OpenAI()
 
-source = '/Users/suryaganesan/vscode/ml/projects/reporter/excel_source/sales_data_copy.xlsx'
+source = '/Github/reporter/excel_source/sales_data_copy.xlsx'
 dfs, _ = load_sheets_to_dfs(source)
 lake = SmartDatalake(dfs, config={"llm": llm})
 

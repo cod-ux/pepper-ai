@@ -13,24 +13,24 @@ def copy_excel_locally(file):
     fname, ext = os.path.splitext(file.name)
     new_fname = f"{fname}_copy{ext}"
     old_fname = f"{fname}{ext}"
-    file_root = os.path.join("/Users/suryaganesan/vscode/ml/projects/reporter/uploads", new_fname)
-    original_path = os.path.join("/Users/suryaganesan/vscode/ml/projects/reporter/", old_fname)
+    file_root = os.path.join("/Github/reporter/uploads", new_fname)
+    original_path = os.path.join("/Github/reporter/", old_fname)
     with open(file_root, "wb") as local_file:
         local_file.write(file.read())
 
-    file_path = f"/Users/suryaganesan/vscode/ml/projects/reporter/uploads/{new_fname}"
+    file_path = f"/Github/reporter/uploads/{new_fname}"
 
     return file_path
 
 def copy_excel_locally_from_path(file):
     fname, ext = os.path.splitext(file)
     new_fname = f"{fname}_copy{ext}"
-    file_root = os.path.join("/Users/suryaganesan/vscode/ml/projects/reporter/uploads", new_fname)
+    file_root = os.path.join("/Github/reporter/uploads", new_fname)
     with open(file_root, "wb") as local_file:
         local_file.write(file.read())
     st.success(f"File saved as {new_fname}")
 
-    file_path = f"/Users/suryaganesan/vscode/ml/projects/reporter/uploads/{new_fname}"
+    file_path = f"/Github/reporter/uploads/{new_fname}"
 
     return file_path
 

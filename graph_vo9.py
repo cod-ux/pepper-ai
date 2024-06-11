@@ -103,7 +103,7 @@ g_state["request"] = request
 g_state["imports"] = ''
 g_state["code_block"] = ''
 g_state["executed_tasks"] = ''
-st_state = {"source_path": "/Users/suryaganesan/vscode/ml/projects/reporter/sales_data_sample.xlsx"}
+st_state = {"source_path": "/Github/reporter/sales_data_sample.xlsx"}
 
 
 g_state["source_path"] = st_state["source_path"]

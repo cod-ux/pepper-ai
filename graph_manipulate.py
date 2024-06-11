@@ -303,7 +303,7 @@ manipulate = wf.compile()
 print("\nApp starts work here....\n")
 
 #req = "reate a graph in the newsheet added based on the data in the first sheet. If you can't make the graph, print not possible."
-source = '/Users/suryaganesan/vscode/ml/projects/reporter/sales_data_copy.xlsx'
+source = '/Github/reporter/sales_data_copy.xlsx'
 
 
  
