@@ -71,22 +71,24 @@ if "state_stack" not in st.session_state:
 
 
 uploaded_file = st.file_uploader("Upload or Select Excel file", ["xlsx", "xls"])
+st.session_state.file_path = None
     
-if uploaded_file is not None and st.session_state.uploaded_file == None:
-            print("\n------ B1 ------\n")
-            print(f"Uploaded file says: {st.session_state.uploaded_file}")
-            st.session_state.uploaded_file = uploaded_file
-            print("\n------ B2 ------\n")
-            print(f"Uploaded file says: {st.session_state.uploaded_file}")
-            print(f"File path says: {st.session_state.file_path}")
-            file_path = copy_excel_locally(st.session_state.uploaded_file)
-            unmerge_sheets(file_path)
-            st.session_state.file_path = file_path
-            st.session_state.state_stack.append(get_binary(st.session_state.file_path))
-            uploaded_file = None 
-     
+if uploaded_file is not None:    
+    if st.session_state.file_path is None:
+        print("\n------ B1 ------\n")
+        print(f"Uploaded file says: {st.session_state.uploaded_file}")
+        st.session_state.uploaded_file = uploaded_file
+        print("\n------ B2 ------\n")
+        print(f"Uploaded file says: {st.session_state.uploaded_file}")
+        print(f"File path says: {st.session_state.file_path}")
+        file_path = copy_excel_locally(st.session_state.uploaded_file)
+        unmerge_sheets(file_path)
+        st.session_state.file_path = file_path
+        st.session_state.state_stack.append(get_binary(st.session_state.file_path))
+        uploaded_file = None
+
 #     Table view
-if st.session_state.file_path is not None:
+    if st.session_state.file_path is not None:
             print("\n------ B4 ------\n")
             print(f"Uploaded file says: {st.session_state.uploaded_file}")
             print(f"File path says: {st.session_state.file_path}")

@@ -225,8 +225,16 @@ Two page:
 - When uploaded file is removed stop showing dfs and wait for re-uploading
 - Show empty dataframe, sidebar and chat command when uploaded file is empty
 
-Iter 03: Re-upload - either remove or fix
+### Iter 03: Re-upload - either remove or fix
+- removed re-upload
+- fixed issue with removing uploaded files
 
+Add Sidebar and chat interface to normal state
+Move uploader to sidebar
+Add empty dataframe when uploaded file is None
+
+
+### 
 
 
 Next iter: Multi page, Re-upload and remove uploaded file
