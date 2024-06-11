@@ -229,12 +229,17 @@ Two page:
 - removed re-upload
 - fixed issue with removing uploaded files
 
+### Iter 04: Make it work online in server
+- Change server to online
+- 
+
+
+
+Next iter:
 Add Sidebar and chat interface to normal state
 Move uploader to sidebar
 Add empty dataframe when uploaded file is None
 
-
-### 
 
 
 Next iter: Multi page, Re-upload and remove uploaded file

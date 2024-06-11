@@ -5,8 +5,8 @@ import openpyxl
 import os
 
 import xlwings as xl
-import phoenix as px
-from phoenix.trace.openai import OpenAIInstrumentor
+#import phoenix as px
+#from phoenix.trace.openai import OpenAIInstrumentor
 
 from code_agents_01 import (
     create_plan,
@@ -19,8 +19,8 @@ from streamlit_utils import copy_excel_locally, save_sheets, handle_duplicate_co
 
 st.set_page_config(layout="wide")
 
-session = px.launch_app()
-OpenAIInstrumentor().instrument()
+#session = px.launch_app()
+#OpenAIInstrumentor().instrument()
 
 @st.cache_data()
 def load_sheets_to_dfs(file_path):
