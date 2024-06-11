@@ -11,7 +11,7 @@ import os
 session = px.launch_app()
 LangChainInstrumentor().instrument()
 
-secrets = "/Users/suryaganesan/Documents/GitHub/Replicate/secrets.toml"
+secrets = "/Github/reporter/secrets.toml"
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 llm = OpenAI()
 

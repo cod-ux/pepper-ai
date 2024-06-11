@@ -17,7 +17,7 @@ from utils import (
 
 
 
-secrets = "/Users/suryaganesan/Documents/GitHub/Replicate/secrets.toml"
+secrets = "/Github/reporter/secrets.toml"
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 
 

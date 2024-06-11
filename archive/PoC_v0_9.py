@@ -10,7 +10,7 @@ from openai import OpenAI
 print("Program begins....\n\n")
 
 source = "sales_data_sample.xlsx"
-secrets = "/Users/suryaganesan/Documents/GitHub/Replicate/secrets.toml"
+secrets = "/Github/reporter/secrets.toml"
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 
 client = OpenAI()

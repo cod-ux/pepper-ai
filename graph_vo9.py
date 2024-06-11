@@ -20,7 +20,7 @@ from temp_manipulate import planner_template, format_request, format_code_reques
 
 # setup
 
-secrets = "/Users/suryaganesan/Documents/GitHub/Replicate/secrets.toml"
+secrets = "/Github/reporter/secrets.toml"
 github_secrets = "secrets.toml"
 
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]

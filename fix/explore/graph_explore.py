@@ -27,7 +27,7 @@ from temp_explore import (
 
 # OpenAI init.
 
-secrets = "/Users/suryaganesan/Documents/GitHub/Replicate/secrets.toml"
+secrets = "/Github/reporter/secrets.toml"
 github_secrets = "secrets.toml"
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 llm = ChatOpenAI(temperature=0, model="gpt-4o")
