@@ -10,7 +10,7 @@ import os
 import toml
 import os
  
-secrets_path = "/Users/suryaganesan/Documents/GitHub/im_rag/im_rag/secrets.toml"
+secrets_path = "//Users/suryaganesan/Documents/GitHub/reporter/secrets.toml"
 
 model_name = "text-embedding-ada-002"
 model_name_2 = "text-embedding-3-large"
