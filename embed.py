@@ -9,7 +9,7 @@ import pandas as pd
 import os
 import toml
 import os
-
+ 
 secrets_path = "/Users/suryaganesan/Documents/GitHub/im_rag/im_rag/secrets.toml"
 
 model_name = "text-embedding-ada-002"
