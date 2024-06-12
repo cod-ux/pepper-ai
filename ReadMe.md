@@ -229,9 +229,10 @@ Two page:
 - removed re-upload
 - fixed issue with removing uploaded files
 
-### Iter 04: Make it work online in server
-- Change server to online
-- 
+### Iter 04: Host server online
+- Host server on AWS EC2 t2.large Windows (done)
+
+### Iter 05: Deal with similar file names
 
 
 
