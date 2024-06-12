@@ -18,7 +18,6 @@ from code_agents_01 import (
 from streamlit_utils import copy_excel_locally, save_sheets, handle_duplicate_columns, unmerge_sheets, get_binary, undo, re_upload
 
 st.set_page_config(layout="wide")
-st.set_option('server.enableCORS', False)
 
 print("\nApp has reached here...")
 
