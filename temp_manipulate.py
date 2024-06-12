@@ -17,12 +17,12 @@ from utils import (
 
 
 
-secrets = "/home/ubuntu/Github/reporter/secrets.toml"
+secrets = "C:/Users/Administrator/Documents/github/reporter/secrets.toml"
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 
 """
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-path = "/home/ubuntu/Github/reporter/faiss_index"
+path = "C:/Users/Administrator/Documents/github/reporter/faiss_index"
 db = FAISS.load_local(path, embeddings, allow_dangerous_deserialization=True)
 
 retriever = db.as_retriever(search_kwargs={"k": 2}, )"""

@@ -25,7 +25,7 @@ from code_agents import (
 #session = px.launch_app()
 source = "sales_data_sample.xlsx"
 source_path = "sales_data_sample.xlsx"
-secrets = "/home/ubuntu/Github/reporter/secrets.toml"
+secrets = "C:/Users/Administrator/Documents/github/reporter/secrets.toml"
 
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 

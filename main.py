@@ -9,7 +9,7 @@ from temp_explore import (
 )
 
 
-source = '/home/ubuntu/Github/reporter/excel_source/sales_data_copy.xlsx'
+source = 'C:/Users/Administrator/Documents/github/reporter/excel_source/sales_data_copy.xlsx'
 
 
 def main():

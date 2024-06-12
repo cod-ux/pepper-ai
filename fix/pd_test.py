@@ -11,11 +11,11 @@ import os
 session = px.launch_app()
 LangChainInstrumentor().instrument()
 
-secrets = "/home/ubuntu/Github/reporter/secrets.toml"
+secrets = "C:/Users/Administrator/Documents/github/reporter/secrets.toml"
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 llm = OpenAI()
 
-source = '/home/ubuntu/Github/reporter/excel_source/sales_data_copy.xlsx'
+source = 'C:/Users/Administrator/Documents/github/reporter/excel_source/sales_data_copy.xlsx'
 dfs, _ = load_sheets_to_dfs(source)
 lake = SmartDatalake(dfs, config={"llm": llm})
 
