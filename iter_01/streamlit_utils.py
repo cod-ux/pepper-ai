@@ -10,18 +10,19 @@ def re_upload():
     st.session_state.file_path = None
     st.cache_data.clear()
 
+
 def generate_unique_filename(directory, fname, ext):
     while True:
         timestamp = int(time.time())
         random_num = random.randint(1000, 9999)
         new_fname = f"{fname}_{timestamp}_{random_num}{ext}"
-        file_path = os.path.join(directory, new_fname)
+        file_path = f"{directory}/{new_fname}"
         if not os.path.exists(file_path):
             return new_fname
 
 def copy_excel_locally(file):
-    # Use os.path.join to construct the directory path
-    directory = os.path.join("C:", "Users", "Administrator", "Documents", "github", "reporter", "uploads")
+    # Construct the directory path using string formatting
+    directory = "C:/Users/Administrator/Documents/github/reporter/uploads"
     
     # Ensure the directory exists
     os.makedirs(directory, exist_ok=True)
@@ -29,7 +30,7 @@ def copy_excel_locally(file):
     fname, ext = os.path.splitext(file.name)
     new_fname = generate_unique_filename(directory, fname, ext)
     
-    file_root = os.path.join(directory, new_fname)
+    file_root = f"{directory}/{new_fname}"
     
     # Normalize the path to handle any discrepancies in path separators
     file_root = os.path.normpath(file_root)
@@ -44,6 +45,7 @@ def copy_excel_locally(file):
     file_path = file_root
 
     return file_path
+
 
 def copy_excel_locally_from_path(file):
     fname, ext = os.path.splitext(file)
