@@ -3,22 +3,39 @@ import xlwings as xl
 import streamlit as st
 import pandas as pd
 from openpyxl import load_workbook
+import time, random
 
 def re_upload():
     st.session_state.uploaded_file = None
     st.session_state.file_path = None
     st.cache_data.clear()
 
+def generate_unique_filename(directory, fname, ext):
+    while True:
+        timestamp = int(time.time())
+        random_num = random.randint(1000, 9999)
+        new_fname = f"{fname}_{timestamp}_{random_num}{ext}"
+        file_path = f"{directory}/{new_fname}"
+        if not os.path.exists(file_path):
+            return new_fname
+
 def copy_excel_locally(file):
+
+    directory = "C:/Users/Administrator/Documents/github/reporter/uploads"
+    os.makedirs(directory, exist_ok=True)
+    
     fname, ext = os.path.splitext(file.name)
-    new_fname = f"{fname}_copy{ext}"
-    old_fname = f"{fname}{ext}"
-    file_root = os.path.join("C:/Users/Administrator/Documents/github/reporter/uploads", new_fname)
-    original_path = os.path.join("C:/Users/Administrator/Documents/github/reporter/", old_fname)
+    new_fname = generate_unique_filename(directory, fname, ext)
+    
+    file_root = f"{directory}/{new_fname}"
+    
+    # Log the constructed file path for debugging
+    print(f"Saving file to: {file_root}")
+    
     with open(file_root, "wb") as local_file:
         local_file.write(file.read())
 
-    file_path = f"C:/Users/Administrator/Documents/github/reporter/uploads/{new_fname}"
+    file_path = file_root
 
     return file_path
 

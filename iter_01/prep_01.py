@@ -98,9 +98,7 @@ if uploaded_file is not None:
 
             
             
-
-
-            st.markdown(f"<h5>{os.path.basename(st.session_state.file_path)}: </h5>", unsafe_allow_html=True)
+            st.markdown(f"<h5>{st.session_state.uploaded_file.name}: </h5>", unsafe_allow_html=True)
                 
             
             dfs, sheets = load_sheets_to_dfs(st.session_state.file_path)
@@ -193,6 +191,9 @@ if uploaded_file is not None:
                                 
                                 cache_clear = True
 
+else:
+    st.session_state.file_path = None
+    st.session_state.uploaded_file = None
 # Post execution
 
 if cache_clear:
