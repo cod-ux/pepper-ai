@@ -20,14 +20,28 @@ def generate_unique_filename(directory, fname, ext):
             return new_fname
 
 def copy_excel_locally(file):
-    directory = "C:/Users/Administrator/Documents/github/reporter/uploads"
+    # Use os.path.join to construct the directory path
+    directory = os.path.join("C:", "Users", "Administrator", "Documents", "github", "reporter", "uploads")
+    
+    # Ensure the directory exists
+    os.makedirs(directory, exist_ok=True)
+    
     fname, ext = os.path.splitext(file.name)
     new_fname = generate_unique_filename(directory, fname, ext)
     
-    file_path = os.path.join(directory, new_fname)
+    file_root = os.path.join(directory, new_fname)
     
-    with open(file_path, "wb") as local_file:
+    # Normalize the path to handle any discrepancies in path separators
+    file_root = os.path.normpath(file_root)
+    
+    # Log the directory and file path for debugging
+    print(f"Directory path: {directory}")
+    print(f"Saving file to: {file_root}")
+    
+    with open(file_root, "wb") as local_file:
         local_file.write(file.read())
+
+    file_path = file_root
 
     return file_path
 
