@@ -73,7 +73,6 @@ if "state_stack" not in st.session_state:
 
 
 uploaded_file = st.file_uploader("Upload or Select Excel file", ["xlsx", "xls"])
-st.session_state.file_path = None
     
 if uploaded_file is not None:    
     if st.session_state.file_path is None:
