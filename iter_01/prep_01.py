@@ -42,8 +42,8 @@ def load_sheets_to_dfs(file_path):
 
 
 header_ph = st.empty()
-header_ph.markdown( "<h3 style='text-align: center;'>Pepper, the Data Explorer</h3>", unsafe_allow_html=True)
-st.markdown( "<h6 style='text-align: center;'>Spend less time preparing your data for analysis</h6>", unsafe_allow_html=True)
+header_ph.markdown( "<h3 style='text-align: center;'>Pepper, The Data Co-pilot</h3>", unsafe_allow_html=True)
+st.markdown( "<h6 style='text-align: center;'>Automate repeatitive data tasks by coding in natural language</h6>", unsafe_allow_html=True)
 st.markdown("<h3> </h3>", unsafe_allow_html=True)
 uploader_ph = st.empty()
 cache_clear = False
@@ -113,7 +113,7 @@ if uploaded_file is not None:
                 st.dataframe(dfs[sheets.index(current_sheet)], height=600)
 
     #     Chat box
-            request = st.chat_input("Enter your command...")
+            request = st.chat_input("Enter your code in natural language...")
 
 
             if request:
