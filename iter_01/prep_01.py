@@ -111,8 +111,8 @@ if uploaded_file is not None:
 
             current_table_placeholder = st.empty()
 
-            with current_table_placeholder.container(height=500):
-                st.dataframe(dfs[sheets.index(current_sheet)], height=600)
+            with current_table_placeholder.container(height=650):
+                st.dataframe(dfs[sheets.index(current_sheet)], height=650)
 
     #     Chat box
             request = st.chat_input("Enter your code in natural language...")
@@ -218,8 +218,8 @@ if cache_clear:
                 
         current_sheet = select_sheet_ph.radio("Select sheet",sheets)
 
-        with current_table_placeholder.container(height=500):
-            st.dataframe(dfs[sheets.index(current_sheet)], height=600)
+        with current_table_placeholder.container(height=650):
+            st.dataframe(dfs[sheets.index(current_sheet)], height=650)
 
         cache_clear = False
 
