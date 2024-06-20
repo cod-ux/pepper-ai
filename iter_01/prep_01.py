@@ -90,7 +90,7 @@ if uploaded_file is not None:
 
 #     Table view
     if st.session_state.file_path is not None:
-            #st.markdown("<h3 style='text-align: center;'></h3>", unsafe_allow_html=True)
+            st.markdown("<h4 style='text-align: center;'></h4>", unsafe_allow_html=True)
             st.markdown( "<h6 style='text-align: center;'>Automate repeatitive data tasks by coding in natural language</h6>", unsafe_allow_html=True)
             print("\n------ B4 ------\n")
             print(f"Uploaded file says: {st.session_state.uploaded_file}")
