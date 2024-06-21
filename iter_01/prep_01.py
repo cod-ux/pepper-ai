@@ -15,7 +15,7 @@ from code_agents_01 import (
     refresh_code
 )
 
-from streamlit_utils import copy_excel_locally, save_sheets, handle_duplicate_columns, unmerge_sheets, get_binary, undo, re_upload
+from streamlit_utils import copy_excel_locally, save_sheets, handle_duplicate_columns, unmerge_sheets, get_binary, undo, load_sheets_to_dfs
 
 st.set_page_config(layout="wide")
 
@@ -23,23 +23,6 @@ print("\nApp has reached here...")
 
 #session = px.launch_app()
 #OpenAIInstrumentor().instrument()
-
-@st.cache_data()
-def load_sheets_to_dfs(file_path):
-    app = xl.App(visible=False)
-    wb = app.books.open(file_path)
-    dfs = []
-    for sheet in wb.sheets:
-        df = sheet.used_range.options(pd.DataFrame, header=True, index=False).value
-        df.columns = handle_duplicate_columns(df.columns)
-        dfs.append(df)
-
-    sheet_names = [sheet.name for sheet in wb.sheets]
-    wb.save()
-    wb.close()
-    app.quit()
-    return dfs, sheet_names
-
 
 header_ph = st.empty()
 header_ph.markdown( "<h3 style='text-align: center;'>Pepper, The Data Co-pilot</h3>", unsafe_allow_html=True)
@@ -91,7 +74,7 @@ if uploaded_file is not None:
 #     Table view
     if st.session_state.file_path is not None:
             st.markdown("<h4 style='text-align: center;'></h4>", unsafe_allow_html=True)
-            st.markdown( "<h6 style='text-align: center;'>Automate repeatitive data tasks by coding in natural language</h6>", unsafe_allow_html=True)
+            #st.markdown( "<h6 style='text-align: center;'>Automate repeatitive data tasks by coding in natural language</h6>", unsafe_allow_html=True)
             print("\n------ B4 ------\n")
             print(f"Uploaded file says: {st.session_state.uploaded_file}")
             print(f"File path says: {st.session_state.file_path}")
@@ -109,8 +92,8 @@ if uploaded_file is not None:
 
             current_table_placeholder = st.empty()
 
-            with current_table_placeholder.container(height=500):
-                st.dataframe(dfs[sheets.index(current_sheet)], height=500)
+
+            current_table_placeholder.dataframe(dfs[sheets.index(current_sheet)], height=500)
 
     #     Chat box
             request = st.chat_input("Enter your code in natural language...")
@@ -216,8 +199,7 @@ if cache_clear:
                 
         current_sheet = select_sheet_ph.radio("Select sheet",sheets)
 
-        with current_table_placeholder.container(height=500):
-            st.dataframe(dfs[sheets.index(current_sheet)], height=500)
+        current_table_placeholder.dataframe(dfs[sheets.index(current_sheet)], height=500)
 
         cache_clear = False
 

@@ -8,7 +8,7 @@ from langchain.vectorstores.faiss import FAISS
 from langchain_openai.embeddings import OpenAIEmbeddings
 from langchain_core.prompts import ChatPromptTemplate
 
-from utils import (
+from utils_02 import (
     query_llm_gpt4,
     extract_code_from_llm,
     load_excel_to_df,

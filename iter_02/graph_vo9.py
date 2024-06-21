@@ -64,7 +64,7 @@ code_chain = prompt | llm.with_structured_output(code)
 
 # Function: Plan task
 
-async def plan_steps(state):
+def plan_steps(state):
     planner_prompt = planner_template()
     planner = create_structured_output_runnable(Plan, ChatOpenAI(model="gpt-4o", temperature=0, streaming=True), planner_prompt)
 
@@ -103,7 +103,7 @@ g_state["request"] = request
 g_state["imports"] = ''
 g_state["code_block"] = ''
 g_state["executed_tasks"] = ''
-st_state = {"source_path": "/Users/suryaganesan/Documents/GitHub/reporter/sales_data_sample.xlsx"}
+st_state = {"source_path": "/Users/suryaganesan/Documents/GitHub/reporter/excel_source/sales_data_sample.xlsx"}
 
 
 g_state["source_path"] = st_state["source_path"]
@@ -134,7 +134,7 @@ for count, task in enumerate(list(g_state["tasks"])):
     #messages += ('system', f"Last extracted task to be executed: {task}")
     #g_state["messages"] = messages
     print("\nFormatting code request\n")
-    code_request = format_code_request(request=g_state["request"], source=g_state["source_path"], task_to_be_executed=task)
+    code_request = format_code_request(task_to_be_executed=task)
     messages = g_state["messages"]
 
     messages += [('user', f' Next task to be executed: {task}')]

@@ -96,16 +96,16 @@ def plan_steps(state: GraphState):
     if len(past_execs) > 4:
         exec_string = ''
         for execs in past_execs[-4:0]:
-            req = execs["request"]
-            update = execs["update"]
+            req = execs["question"]
+            update = execs["answer"]
             exec_string += f"\nPast Request: {req}\nTable: {update}\n"
         messages += [("system", f"These are the past 4 requests from the user along with a view of how the excel sheet looked like after executing the request: \n{exec_string}")]
 
     if len(past_execs) < 4:
         exec_string = ''
         for execs in past_execs:
-            req = execs["request"]
-            update = execs["update"]
+            req = execs["question"]
+            update = execs["answer"]
             exec_string += f"\nRequest: {req}\nTable: {update}\n"
         messages += [("system", f"These are the past few requests from the user along with a view of how the excel sheet looked like after executing the request: \n{exec_string}")]
 
