@@ -10,7 +10,7 @@ import pandas as pd
 # Setup
 
 source = "sales_data_sample.xlsx"
-secrets = "/Users/suryaganesan/Documents/GitHub/reporter/secrets.toml"
+secrets = "C:/Users/Administrator/Documents/github/reporter/secrets.toml"
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 
 client = OpenAI()

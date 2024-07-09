@@ -20,7 +20,7 @@ from temp_manipulate import planner_template, format_request, format_code_reques
 
 # setup
 
-secrets = "/Users/suryaganesan/Documents/GitHub/reporter/secrets.toml"
+secrets = "C:/Users/Administrator/Documents/github/reporter/secrets.toml"
 github_secrets = "secrets.toml"
 
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
@@ -103,7 +103,7 @@ g_state["request"] = request
 g_state["imports"] = ''
 g_state["code_block"] = ''
 g_state["executed_tasks"] = ''
-st_state = {"source_path": "/Users/suryaganesan/Documents/GitHub/reporter/excel_source/sales_data_sample.xlsx"}
+st_state = {"source_path": "C:/Users/Administrator/Documents/github/reporter/excel_source/sales_data_sample.xlsx"}
 
 
 g_state["source_path"] = st_state["source_path"]
