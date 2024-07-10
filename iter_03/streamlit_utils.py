@@ -138,4 +138,16 @@ def split_numbered_list(text):
 2. Copy all deals whose Deal Size is Medium from sheet 'Test 1' to a new Sheet called 'Mid market deals'
 3. Copy the columns from test 1 that has a +33 country code to a new sheet called 'France Deals'
 4. Plot a graph based on the 'France Deals' sheet on the sales value against Year id.
+
+1. If Phone column in ‘Test 1’ doesn’t have a country code that starts with ‘+x' or ‘(xyz)’ where x, y,z are numbers, then add +1 as the country code.
+2. Move the rows from ‘Test 1’ that has a ‘+1’ country code in phone column to a new sheet called ‘US Deals’ 
+3. Make graph showing the cumulative sales value from the US deals sheet and plot it against the year id.
+
+Pre:
+1. Fill empty cells with n/a
+2. 
+
+1. Create a new column in ’Test 1’ by writing excel formulas that has a boolean output. If the deal size is ‘Medium’, Phone number starts with ‘+33’ and the YEAR_ID is either 2003 or 2004, then the formula output should be True, else the output should be false. The name of the column is ‘Relavancy’.
+2. Make a graph on the entries from ‘Test 1’ whose Relevancy is True that shows the cumulative sales against year_id.
+
 """

@@ -35,11 +35,32 @@ cache_clear = False
 if 'key' not in st.session_state:
     st.session_state.key = 'value'
 
+if 'dev_mode' not in st.session_state:
+    st.session_state.dev_mode = False
+
 if "messages" not in st.session_state.keys():
-    st.session_state.messages = [{
-        "role": "ai", 
-        "content": "Hello, operator. What can I do for you today?",
-    }]
+    st.session_state.messages = [{"role": "ai", "content": "..."}]
+
+if "text_chain_3" not in st.session_state.keys():
+    st.session_state.text_chain_3 = None
+
+if "text_chain_2" not in st.session_state.keys():
+    st.session_state.text_chain_2 = None
+
+if "text_chain_1" not in st.session_state.keys():
+    st.session_state.text_chain_1 = None
+
+if 'continue_clicked' not in st.session_state:
+    st.session_state.continue_clicked = False
+
+if 'user_input' not in st.session_state:
+    st.session_state.user_input = None
+
+if 'request' not in st.session_state:
+    st.session_state.request = None
+
+if 'temp_input' not in st.session_state:
+    st.session_state.temp_input = None
 
 if "file_path" not in st.session_state:
    st.session_state.file_path = None
@@ -57,9 +78,19 @@ if "past_execs" not in st.session_state:
     st.session_state.past_execs = ""
 
 
+def display_code_editor():
+    code_editor = st.empty()
+    st.session_state.temp_input = code_editor.text_area("Code editor", final_script, height=250)
+    st.button("Continue", on_click=handle_continue)
 
-uploaded_file = st.file_uploader("Upload or Select Excel file", ["xlsx", "xls"])
-    
+def handle_continue():
+    st.session_state.user_input = st.session_state.temp_input
+    print(f"continue clicked: {st.session_state.continue_clicked}")
+    st.session_state.continue_clicked = True
+    #st.rerun()
+
+uploaded_file = st.file_uploader("Upload or Select Excel file", ["xlsx", "xls"])    
+
 if uploaded_file is not None:    
     if st.session_state.file_path is None:
         print("\n------ B1 ------\n")
@@ -99,118 +130,216 @@ if uploaded_file is not None:
             current_table_placeholder.dataframe(dfs[sheets.index(current_sheet)], height=500)
 
     #     Chat box
-            request = st.chat_input("Enter your code in natural language...")
+            st.session_state.request = st.chat_input("Enter your code in natural language...")
 
+            
 
-            if request:
+            msg_length_0 = len(st.session_state.messages)
+
+            if st.session_state.request:
                     print("\n------ B5 ------\n")
-                    st.session_state.messages.append({"role": "human", "content": request})
-                    with st.chat_message("human"):
-                            st.write(request)
+                    st.session_state.messages.append({"role": "human", "content": st.session_state.request})
+
+            
 
 #     Command execution
 
             if st.session_state.messages[-1]["role"] != "ai":
                     print("\n------ B6 ------\n")
-                    if request:
-                        with st.chat_message("ai"):
-                            if request != "quit":
-                                print("\n------ B7 ------\n")
-                                st.session_state.state_stack.append(get_binary(st.session_state.file_path))
-                                test = save_sheets(st.session_state.file_path)
-                                request_list = split_numbered_list(request)
-                                print(f"Request list:\n {request_list}")
-                                for req in request_list:
-                                    request = req
-                                    st.caption(f"Executing: {request}")
+                    print(f"continue clicked: {st.session_state.continue_clicked}")
+
+                    if st.session_state.dev_mode:
+                        text_chain_1 = st.empty()
+                        text_chain_2 = st.empty()
+                        
+                        with text_chain_1.chat_message("ai"):
+                            if st.session_state.request:
+                                if st.session_state.request != "quit":
+                                    st.caption(f"Executing: {st.session_state.request}")
+                                    print("\n------ B7 ------\n")
+                                    st.session_state.state_stack.append(get_binary(st.session_state.file_path))
+                                    test = save_sheets(st.session_state.file_path)
+                                    #request_list = split_numbered_list(request)
+                                    #print(f"Request list:\n {request_list}")
+                                    #for req in request_list:
+                                        #request = req
+                                        #st.caption(f"Executing: {request}")
+                                    
                                     st.caption("Creating a plan...")
                                     print("Creating a plan...\n")
-                                    additional = create_plan(request, st.session_state.file_path)
+                                    additional = create_plan(st.session_state.request, st.session_state.file_path)
 
                                     #st.write(f"The plan: \n{plan}")
                                     #print("The plan: \n", plan)
 
                                     st.caption("Generating script...")
-                                    final_script = generate_code(request, st.session_state.file_path, additional)
+                                    final_script = generate_code(st.session_state.request, st.session_state.file_path, additional)
 
                                     #st.code(f"Code generated: \n {script_generated}")
                                     print("The code: \n", final_script)
-                                    #print("\n\nReviewing code...")
 
-                                    #reviewed_script = review_code(request, script_generated, st.session_state.file_path, plan)
+                                    if not st.session_state.continue_clicked:
+                                        display_code_editor()
 
-                                    #final_script = reviewed_script
+                    if not st.session_state.dev_mode:        
+                        if st.session_state.request:
+                            st.session_state.text_chain_3 = st.empty()
+                            with st.session_state.text_chain_3.chat_message("ai"):
+                                if st.session_state.request != "quit":
+                                    print("\n------ B7 ------\n")
+                                    st.session_state.state_stack.append(get_binary(st.session_state.file_path))
+                                    test = save_sheets(st.session_state.file_path)
+                                    request_list = split_numbered_list(st.session_state.request)
+                                    print(f"Request list:\n {request_list}")
+                                    for req in request_list:
+                                        request = req
+                                        st.caption(f"Executing: {request}")
+                                        st.caption("Creating a plan...")
+                                        print("Creating a plan...\n")
+                                        additional = create_plan(request, st.session_state.file_path)
 
-                                    #st.code(f"#Script reviewed: \n{final_script}")
-                                    #print("Script reviewed: \n", final_script)
+                                        #st.write(f"The plan: \n{plan}")
+                                        #print("The plan: \n", plan)
 
-                                    try:
-                                        st.caption("\n\nInitiating code execution...")
-                                        exec(final_script)
-                                        status = save_sheets(st.session_state.file_path)
-                                        st.write("...Request executed")
-                                        message = {"role": "ai", "content": f"Successfully executed with: \n{final_script}"}
-                                        print("\n------ B8 ------\n")
-                                        #st.session_state.messages.append(message)
-                                        
+                                        st.caption("Generating script...")
+                                        final_script = generate_code(request, st.session_state.file_path, additional)
 
-                                    except Exception as e:
-                                        st.caption(f"Error: {e}")
-                                        st.caption("Analysing the error....")
-                                        print("Got error: ", e)
+                                        #st.code(f"Code generated: \n {script_generated}")
+                                        print("The code: \n", final_script)
+                                        #print("\n\nReviewing code...")
 
-                                        new_code = refresh_code(request, e, st.session_state.file_path, final_script, additional)
-                                        #st.code(f"New code: \n {new_code}")
-                                        print("New code: ", new_code)
+                                        #reviewed_script = review_code(request, script_generated, st.session_state.file_path, plan)
+
+                                        #final_script = reviewed_script
+
+                                        #st.code(f"#Script reviewed: \n{final_script}")
+                                        #print("Script reviewed: \n", final_script)
 
                                         try:
-                                            st.caption("Initializing new refreshed code....")
-                                            exec(new_code)
+                                            st.caption("\n\nInitiating code execution...")
+                                            exec(final_script)
                                             status = save_sheets(st.session_state.file_path)
-                                            st.write("Request Executed")
-                                            message = {"role": "ai", "content": f"Successfully executed with: \n{str(final_script)}"}
+                                            st.write("...Request executed")
+                                            message = {"role": "ai", "content": f"Successfully executed with: \n{final_script}"}
                                             print("\n------ B8 ------\n")
                                             #st.session_state.messages.append(message)
                                             
 
-                                        except Exception as e2:
-                                            st.caption(f"New Error: {e2}")
-                                            message = {"role": "ai", "content": f"Execution unsuccessful due to error: \n{e2}"}
-                                            #st.session_state.messages.append(message)
-                                            print("Got a new error: ", e2)
-                                            print("\n------ B9 ------\n")
-                                    
+                                        except Exception as e:
+                                            st.caption(f"Error: {e}")
+                                            st.caption("Analysing the error....")
+                                            print("Got error: ", e)
 
-                                    print("\n------ B10 ------\n")
+                                            new_code = refresh_code(request, e, st.session_state.file_path, final_script, additional)
+                                            #st.code(f"New code: \n {new_code}")
+                                            print("New code: ", new_code)
 
-                                    #current_table_placeholder.empty()
-                                    #select_sheet_ph.empty()
-                                    
-                                    #st.sidebar.empty()
-                                    st.cache_data.clear()
-                                    
-                                    #current_sheet = None
+                                            try:
+                                                st.caption("Initializing new refreshed code....")
+                                                exec(new_code)
+                                                status = save_sheets(st.session_state.file_path)
+                                                st.write("Request Executed")
+                                                message = {"role": "ai", "content": f"Successfully executed with: \n{str(final_script)}"}
+                                                print("\n------ B8 ------\n")
+                                                #st.session_state.messages.append(message)
+                                                
 
-                                    dfs, sheets = load_sheets_to_dfs(st.session_state.file_path)
+                                            except Exception as e2:
+                                                st.caption(f"New Error: {e2}")
+                                                message = {"role": "ai", "content": f"Execution unsuccessful due to error: \n{e2}"}
+                                                #st.session_state.messages.append(message)
+                                                print("Got a new error: ", e2)
+                                                print("\n------ B9 ------\n")
+                                        
 
-                                    print(dfs[0])
-                                    print(st.session_state.file_path)
+                                        print("\n------ B10 ------\n")
+
+                                        #current_table_placeholder.empty()
+                                        #select_sheet_ph.empty()
+                                        
+                                        #st.sidebar.empty()
+                                        st.cache_data.clear()
+                                        
+                                        #current_sheet = None
+
+                                        dfs, sheets = load_sheets_to_dfs(st.session_state.file_path)
+
+                                        print(dfs[0])
+                                        print(st.session_state.file_path)
 
 
-                                    #current_sheet = st.empty()
-                                            
-                                    #current_sheet = select_sheet_ph.radio("Select sheet",sheets)
+                                        #current_sheet = st.empty()
+                                                
+                                        #current_sheet = select_sheet_ph.radio("Select sheet",sheets)
 
-                                    current_table_placeholder.dataframe(dfs[sheets.index(sheets[0])], height=500)
-
-                                    cache_clear = True
-                                    time.sleep(1.0)
-                                   
-
+                                        current_table_placeholder.dataframe(dfs[sheets.index(sheets[0])], height=500)
+                                        cache_clear = True
+        
 
 else:
     st.session_state.file_path = None
-    st.session_state.uploaded_file = None
+    st.session_state.uploaded_file = None 
+
+
+if st.session_state.dev_mode:
+    if st.session_state.continue_clicked:
+        text_chain_1.empty()
+        with text_chain_2.chat_message("human"):    
+                                        try:
+                                            #code_editor.empty()
+                                            st.write("\n\nInitiating code execution...")
+                                            exec(st.session_state.user_input)
+                                            status = save_sheets(st.session_state.file_path)
+                                            st.caption("...Request executed")
+                                            st.caption("-Reloading workbook-")
+                                            time.sleep(0.5)
+                                            message = {"role": "ai", "content": f"Successfully executed with: \n{st.session_state.user_input}"}
+                                            print("\n------ B8 ------\n")
+                                            #st.session_state.messages.append(message)
+                                            
+
+                                        except Exception as e:
+                                            st.caption(f"Error: {e}")
+                                            st.caption("Analysing the error....")
+                                            print("Got error: ", e)
+
+                                            new_code = refresh_code(st.session_state.request, e, st.session_state.file_path, st.session_state.user_input, additional)
+                                            #st.code(f"New code: \n {new_code}")
+                                            print("New code: ", new_code)
+
+                                            try:
+                                                st.caption("Initializing new refreshed code....")
+                                                exec(new_code)
+                                                status = save_sheets(st.session_state.file_path)
+                                                st.write("Request Executed")
+                                                message = {"role": "ai", "content": f"Successfully executed with: \n{str(st.session_state.user_input)}"}
+                                                print("\n------ B8 ------\n")
+                                                #st.session_state.messages.append(message)
+                                                
+
+                                            except Exception as e2:
+                                                st.caption(f"New Error: {e2}")
+                                                message = {"role": "ai", "content": f"Execution unsuccessful due to error: \n{e2}"}
+                                                #st.session_state.messages.append(message)
+                                                print("Got a new error: ", e2)
+                                                print("\n------ B9 ------\n")
+                                        
+
+                                        print("\n------ B10 ------\n")
+                                        msg_length_1 = len(st.session_state.messages)
+
+
+                                        
+                                        st.session_state.messages = [{"role": "ai", "content": "..."}]
+                                        cache_clear = True
+                                        st.session_state.request = None
+                                        st.session_state.continue_clicked = False
+
+
+                                   
+
+
+
 # Post execution
 
 if cache_clear:
@@ -236,6 +365,7 @@ if cache_clear:
 
         current_table_placeholder.dataframe(dfs[sheets.index(current_sheet)], height=500)
 
+
         cache_clear = False
 
 # side bar    
@@ -250,6 +380,12 @@ if st.session_state.file_path:
                 file_name = os.path.basename(st.session_state.file_path),
                 mime = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
             )
+            
+            st.session_state.dev_mode = st.sidebar.toggle("Developer Mode")
+            if st.session_state.dev_mode:
+                st.sidebar.button("Abort Step", on_click=lambda: st.rerun())
                   
 
 ## Features to add
+# C:/Users/Administrator/Documents/github/reporter
+# C:/Users/Administrator/Documents/github/reporter
