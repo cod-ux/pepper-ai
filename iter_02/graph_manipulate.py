@@ -26,7 +26,7 @@ from temp_manipulate import (
 
 # OpenAI init.
 
-secrets = "C:/Users/Administrator/Documents/github/reporter/secrets.toml"
+secrets = "C:/Users/Administrator/Documents/reporter/secrets.toml"
 github_secrets = "secrets.toml"
 os.environ["OPENAI_API_KEY"] = toml.load(secrets)["OPENAI_API_KEY"]
 llm = ChatOpenAI(temperature=0, model="gpt-4o")
@@ -303,7 +303,7 @@ manipulate = wf.compile()
 print("\nApp starts work here....\n")
 
 #req = "reate a graph in the newsheet added based on the data in the first sheet. If you can't make the graph, print not possible."
-source = 'C:/Users/Administrator/Documents/github/reporter/sales_data_copy.xlsx'
+source = 'C:/Users/Administrator/Documents/reporter/sales_data_copy.xlsx'
 
 
  

@@ -41,7 +41,7 @@ st.markdown( "<h6 style='text-align: center;'>Automate repeatitive data tasks by
 st.markdown("<h4> </h4>", unsafe_allow_html=True)
 uploader_ph = st.empty()
 cache_clear = False
-img_folder = "C:/Users/Administrator/Documents/github/reporter/ph_images"
+img_folder = "C:/Users/Administrator/Documents/reporter/ph_images"
 
 uploaded_file = st.file_uploader("Upload or Select Excel file", ["xlsx", "xls"])
 

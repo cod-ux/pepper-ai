@@ -10,14 +10,14 @@ import os
 import toml
 import os
  
-secrets_path = "C:/Users/Administrator/Documents/github/reporter/secrets.toml"
+secrets_path = "C:/Users/Administrator/Documents/reporter/secrets.toml"
 
 model_name = "text-embedding-ada-002"
 model_name_2 = "text-embedding-3-large"
 
 os.environ["OPENAI_API_KEY"] = toml.load(secrets_path)["OPENAI_API_KEY"]
 
-source_path = "C:/Users/Administrator/Documents/github/reporter/RAG_docs/"
+source_path = "C:/Users/Administrator/Documents/reporter/RAG_docs/"
 
 def list_files(directory):
     file_list = []
@@ -26,7 +26,7 @@ def list_files(directory):
             file_list.append(os.path.join(root, file_name))
     return file_list
 
-directory = "C:/Users/Administrator/Documents/github/reporter/RAG_docs/"
+directory = "C:/Users/Administrator/Documents/reporter/RAG_docs/"
 files = list_files(directory)
 
 
@@ -55,7 +55,7 @@ print("Embedding chunks and exporting to faiss...")
 
 #embeddings = SentenceTransformerEmbeddings(model_name='all-MiniLM-L6-v2')
 embeddings = OpenAIEmbeddings(model="text-embedding-3-large")
-path = "C:/Users/Administrator/Documents/github/reporter/"
+path = "C:/Users/Administrator/Documents/reporter/"
 
 #db = FAISS.from_documents(page_list, embeddings)
 db = FAISS.from_texts(page_list, embeddings)

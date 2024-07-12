@@ -25,8 +25,8 @@ print("\nApp has reached here...")
 #OpenAIInstrumentor().instrument()
 
 header_ph = st.empty()
-header_ph.markdown( "<h3 style='text-align: center;'>Pepper, The Data Co-pilot</h3>", unsafe_allow_html=True)
-st.markdown( "<h6 style='text-align: center;'>Automate repeatitive data tasks by coding in natural language</h6>", unsafe_allow_html=True)
+header_ph.markdown( "<h3 style='text-align: center;'>Pepper, The Data Fairy 🧚🏻‍♀️</h3>", unsafe_allow_html=True)
+st.markdown( "<h6 style='text-align: center;'>Clean data 3x faster with natural language data cleaning </h6>", unsafe_allow_html=True)
 st.markdown("<h4> </h4>", unsafe_allow_html=True)
 uploader_ph = st.empty()
 cache_clear = False
@@ -386,6 +386,6 @@ if st.session_state.file_path:
                 st.sidebar.button("Abort Step", on_click=lambda: st.rerun())
                   
 
-## Features to add
-# C:/Users/Administrator/Documents/github/reporter
-# C:/Users/Administrator/Documents/github/reporter
+
+# C:/Users/Administrator/Documents/reporter
+# C:/Users/Administrator/Documents/reporter
