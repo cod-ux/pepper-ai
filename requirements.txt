@@ -4,3 +4,4 @@ openai
 xlwings
 openpyxl
 streamlit
+faiss-gpu
