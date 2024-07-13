@@ -150,4 +150,34 @@ Pre:
 1. Create a new column in ’Test 1’ by writing excel formulas that has a boolean output. If the deal size is ‘Medium’, Phone number starts with ‘+33’ and the YEAR_ID is either 2003 or 2004, then the formula output should be True, else the output should be false. The name of the column is ‘Relavancy’.
 2. Make a graph on the entries from ‘Test 1’ whose Relevancy is True that shows the cumulative sales against year_id.
 
+1. Create a new sheet called Formatted source.
+2. Use the entries in the third row in Test 1 sheet as column names for the Formatted source sheet, except for the first entry in that row.
+3. Add ‘Project count’ as the last column name in Formatted source.
+4. Iterate through the entries in Test 1 sheet and store the last non-empty value in column 1 as ‘last project count’ variable. If the first column value in the row is empty, second column value is not ‘Unique id’ and the row is not empty with no data, then copy the row from the second cell to the last one and add it as an entry to Formatted source. Also add the value of ‘last project count’ as the entry to the project count column in the sheet.
+
+1. Copy the third row in Test 1 and use them as the column names for test 1 by inserting a new first row. Also create a new column in the end called ‘Project’.
+2.  Remove the rows that have ‘Unique ID’ in the second column excluding the first row.
+3. Iterate through every row in Test 1 and store the last encountered non-null value in the first column as project name variable and add a new cell in the row’s end with the project name variable as the cell’s value.
+
+1. Remove all empty rows.
+2. Iterate through every row in test 1 and copy the last non-null value of the first column into that row’s project column’s value.
+
+Step 1:
+1. Copy the third row in test 1’s values and name the column’s in test 1 as those values
+2. Delete all empty rows.
+3. Delete all rows whose first cell is empty and second cell’s value is ‘Unique id’ excluding the first row.
+4. Rename the first column in test 1 as Projects.
+
+Step 2:
+1. Rename the first column in test 1 as Projects.
+2. Iterate through the cells in the projects column in the test 1 sheet and copy the cell value if it is not empty and paste it in the following empty cells, until another non-empty cell is detected then copy the new value to paste in the following empty cells.
+3. Delete the rows in the test 1 sheet where the first cell is non-empty but all the following cells are empty.
+
+1. Copy the third row in test 1’s values and name the column’s in test 1 as those values
+2. Delete all empty rows.
+3. Delete all rows whose first cell is empty and second cell’s value is ‘Unique id’ excluding the first row.
+4. Rename the first column in test 1 as Projects.
+5. Rename the first column in test 1 as Projects.
+6. Iterate through the cells in the projects column in the test 1 sheet and copy the cell value if it is not empty and paste it in the following empty cells, until another non-empty cell is detected then copy the new value to paste in the following empty cells.
+7. Delete the rows in the test 1 sheet where the first cell is non-empty but all the following cells are empty.
 """

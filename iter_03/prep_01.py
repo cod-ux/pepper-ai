@@ -84,7 +84,8 @@ def display_code_editor():
     st.button("Continue", on_click=handle_continue)
 
 def handle_continue():
-    st.session_state.user_input = st.session_state.temp_input
+    temp_input = st.session_state.temp_input
+    st.session_state.user_input = temp_input
     print(f"continue clicked: {st.session_state.continue_clicked}")
     st.session_state.continue_clicked = True
     #st.rerun()
