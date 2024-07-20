@@ -77,15 +77,18 @@ if "state_stack" not in st.session_state:
 if "past_execs" not in st.session_state:
     st.session_state.past_execs = ""
 
+if "st.session_state.additional" not in st.session_state:
+    st.session_state.additional = None
+
 
 def display_code_editor():
     code_editor = st.empty()
-    st.session_state.temp_input = code_editor.text_area("Code editor", final_script, height=250)
+    st.session_state.temp_input = code_editor.code(final_script, language='python', line_numbers=True)
     st.button("Continue", on_click=handle_continue)
 
 def handle_continue():
-    temp_input = st.session_state.temp_input
-    st.session_state.user_input = temp_input
+    #temp_input = st.session_state.temp_input
+    st.session_state.user_input = final_script
     print(f"continue clicked: {st.session_state.continue_clicked}")
     st.session_state.continue_clicked = True
     #st.rerun()
@@ -168,13 +171,13 @@ if uploaded_file is not None:
                                     
                                     st.caption("Creating a plan...")
                                     print("Creating a plan...\n")
-                                    additional = create_plan(st.session_state.request, st.session_state.file_path)
+                                    st.session_state.additional = create_plan(st.session_state.request, st.session_state.file_path)
 
                                     #st.write(f"The plan: \n{plan}")
                                     #print("The plan: \n", plan)
 
                                     st.caption("Generating script...")
-                                    final_script = generate_code(st.session_state.request, st.session_state.file_path, additional)
+                                    final_script = generate_code(st.session_state.request, st.session_state.file_path, st.session_state.additional)
 
                                     #st.code(f"Code generated: \n {script_generated}")
                                     print("The code: \n", final_script)
@@ -197,13 +200,13 @@ if uploaded_file is not None:
                                         st.caption(f"Executing: {request}")
                                         st.caption("Creating a plan...")
                                         print("Creating a plan...\n")
-                                        additional = create_plan(request, st.session_state.file_path)
+                                        st.session_state.additional = create_plan(request, st.session_state.file_path)
 
                                         #st.write(f"The plan: \n{plan}")
                                         #print("The plan: \n", plan)
 
                                         st.caption("Generating script...")
-                                        final_script = generate_code(request, st.session_state.file_path, additional)
+                                        final_script = generate_code(request, st.session_state.file_path, st.session_state.additional)
 
                                         #st.code(f"Code generated: \n {script_generated}")
                                         print("The code: \n", final_script)
@@ -231,7 +234,7 @@ if uploaded_file is not None:
                                             st.caption("Analysing the error....")
                                             print("Got error: ", e)
 
-                                            new_code = refresh_code(request, e, st.session_state.file_path, final_script, additional)
+                                            new_code = refresh_code(request, e, st.session_state.file_path, final_script, st.session_state.additional)
                                             #st.code(f"New code: \n {new_code}")
                                             print("New code: ", new_code)
 
@@ -304,7 +307,7 @@ if st.session_state.dev_mode:
                                             st.caption("Analysing the error....")
                                             print("Got error: ", e)
 
-                                            new_code = refresh_code(st.session_state.request, e, st.session_state.file_path, st.session_state.user_input, additional)
+                                            new_code = refresh_code(st.session_state.request, e, st.session_state.file_path, st.session_state.user_input, st.session_state.additional)
                                             #st.code(f"New code: \n {new_code}")
                                             print("New code: ", new_code)
 

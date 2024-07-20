@@ -36,7 +36,7 @@ def query_llm_gpt4_plan(user_msg, client=client):
     )
 
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=messages
     ).choices[0].message
 
@@ -67,7 +67,7 @@ Import ALL Necessary libraries in the code.
     )
 
     response = client.chat.completions.create(
-        model="gpt-4o",
+        model="gpt-4o-mini",
         messages=messages
     ).choices[0].message
 

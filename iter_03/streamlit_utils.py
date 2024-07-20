@@ -177,7 +177,19 @@ Step 2:
 2. Delete all empty rows.
 3. Delete all rows whose first cell is empty and second cell’s value is ‘Unique id’ excluding the first row.
 4. Rename the first column in test 1 as Projects.
-5. Rename the first column in test 1 as Projects.
-6. Iterate through the cells in the projects column in the test 1 sheet and copy the cell value if it is not empty and paste it in the following empty cells, until another non-empty cell is detected then copy the new value to paste in the following empty cells.
-7. Delete the rows in the test 1 sheet where the first cell is non-empty but all the following cells are empty.
+5. Iterate through the cells in the projects column in the test 1 sheet and copy the cell value if it is not empty and paste it in the following empty cells, until another non-empty cell is detected then copy the new value to paste in the following empty cells.
+6. Delete the rows in the test 1 sheet where the first cell is non-empty but all the following cells are empty.
+7. Make a new sheet and plot a graph of the sum of sales value in y axis against for each project in project column in the x axis from Test 1 sheet’s data
+
+
+Phone number formatting: Remove dots in the Phone column in test 1 sheet and replace them with a ‘ ’. If the entries in the phone column don’t start with + or (, add ‘+1 ‘ as their country code. For phone numbers that have brackets (), like '(171)’ or ‘(91)’ replace the ‘(‘ character with '+' and replace ‘)’ character with a space.
+
+1. Delete all empty rows in every sheet
+2. Copy the second row’s values in every sheet and name the column’s  in that sheet as those values
+3. Iterate through the cells in the first column in every sheet and copy the cell value if it is not empty and paste it in the following empty cells, until another non-empty cell is detected then copy the new value to paste in the following empty cells. Include the first cell in this loop as well.
+4. Rename the first column’s name in every sheet as Project name.
+5. Delete the Second row in every sheet
+6. Iterate through every sheet except p1 and add all the rows in them to p1 excluding the first row. Delete all sheets except p1 in the end.
+7. Rename p1 sheet to Formatted source. 
+8. Make a new sheet and plot a graph of the sum of sales value in y axis against for each project in project name column in the x axis from the Formatted source sheet’s data. Don’t count null values as project names or ‘ ‘ characters.
 """
