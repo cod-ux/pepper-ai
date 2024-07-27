@@ -1,33 +1,29 @@
-import streamlit as st
+# If necessary, install the openai Python library by running 
+# pip install openai
 
-# Initialize session state to track whether the continue button has been clicked
-if 'continue_clicked' not in st.session_state:
-    st.session_state.continue_clicked = False
+from openai import OpenAI
+import toml
+import requests
 
-# Title of the application
-st.title("Editable Text Area Example")
 
-# Display the text area and button if continue button has not been clicked
-if not st.session_state.continue_clicked:
-    # Initial text for the text area
-    initial_text = "Enter your text here..."
+secrets = "C:/Users/Administrator/Documents/reporter/secrets.toml"
+api_key = toml.load(secrets)["HF"]
 
-    # Editable text area
-    user_input = st.text_area("Edit your text below:", initial_text)
+API_URL = "https://m0ld0kuoduqn2cnc.us-east-1.aws.endpoints.huggingface.cloud"
+headers = {
+	"Accept" : "application/json",
+	"Authorization": f"Bearer {api_key}",
+	"Content-Type": "application/json" 
+}
 
-    # Button to proceed to the next step
-    if st.button("Continue"):
-        # Store the user input and set the continue button state to True
-        st.session_state.user_input = user_input
-        st.session_state.continue_clicked = True
-        st.experimental_rerun()  # Rerun the app to update the state
+def query(payload):
+	response = requests.post(API_URL, headers=headers, json=payload)
+	return response.json()
 
-# If continue button has been clicked, show the next step content
-if st.session_state.continue_clicked:
-    st.write("You entered:")
-    st.write(st.session_state.user_input)
-    # Add the logic for the next step here
-    st.write("Proceeding to the next step...")
-    
-    # Example of the next step (could be anything you want)
-    st.write("This is the next step content.")
+output = query({
+	"inputs": "Who is captain America? Provide a short answer",
+	"parameters": {"max_new_tokens": 2048, "return_full_text": False, "temperature": 0.1}
+})
+
+print(output[0]["generated_text"])
+

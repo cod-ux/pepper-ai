@@ -18,6 +18,9 @@ client = OpenAI()
 pd.set_option('display.max_columns', None)
 pd.set_option('display.expand_frame_repr', False)
 
+def query_mistral(user_msg):
+    pass
+
 def query_llm_gpt4_plan(user_msg, client=client):
     messages = []
 

@@ -25,7 +25,7 @@ print("\nApp has reached here...")
 #OpenAIInstrumentor().instrument()
 
 header_ph = st.empty()
-header_ph.markdown( "<h3 style='text-align: center;'>Pepper, The Data Fairy 🧚🏻‍♀️</h3>", unsafe_allow_html=True)
+header_ph.markdown( "<h3 style='text-align: center;'>Pepper, Your Data Co-Pilot 🤖</h3>", unsafe_allow_html=True)
 st.markdown( "<h6 style='text-align: center;'>Clean data 3x faster with natural language data cleaning </h6>", unsafe_allow_html=True)
 st.markdown("<h4> </h4>", unsafe_allow_html=True)
 uploader_ph = st.empty()
@@ -77,18 +77,18 @@ if "state_stack" not in st.session_state:
 if "past_execs" not in st.session_state:
     st.session_state.past_execs = ""
 
-if "st.session_state.additional" not in st.session_state:
+if "additional" not in st.session_state:
     st.session_state.additional = None
 
 
 def display_code_editor():
     code_editor = st.empty()
-    st.session_state.temp_input = code_editor.code(final_script, language='python', line_numbers=True)
+    st.session_state.temp_input = code_editor.text_area("Code", final_script)
     st.button("Continue", on_click=handle_continue)
 
 def handle_continue():
     #temp_input = st.session_state.temp_input
-    st.session_state.user_input = final_script
+    st.session_state.user_input = st.session_state.temp_input
     print(f"continue clicked: {st.session_state.continue_clicked}")
     st.session_state.continue_clicked = True
     #st.rerun()
