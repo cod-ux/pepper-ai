@@ -26,7 +26,7 @@ print("\nApp has reached here...")
 
 header_ph = st.empty()
 header_ph.markdown( "<h3 style='text-align: center;'>Pepper, Your Data Co-Pilot 🤖</h3>", unsafe_allow_html=True)
-st.markdown( "<h6 style='text-align: center;'>Spend less time dealing with bad data</h6>", unsafe_allow_html=True)
+st.markdown( "<h6 style='text-align: center;'>Spend more time with <span style='text-decoration: line-through; text-decoration-color: orange;'>bad</span> clean data</h6>", unsafe_allow_html=True)
 st.markdown("<h4> </h4>", unsafe_allow_html=True)
 uploader_ph = st.empty()
 cache_clear = False
