@@ -1,4 +1,4 @@
-# Pepper AI: Spend Less Time Preparing Your Data for Analysis
+# Pepper AI: Code Generation for Data Analysis
 
 **Pepper AI** is a web app designed to streamline your data preparation process. Upload an Excel file, and with the help of AI-powered chat commands, explore and manipulate your data to get it analysis-ready quickly and efficiently.
 
