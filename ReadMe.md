@@ -1,4 +1,4 @@
-# Command AI: Spend less time preparing your data for analysis
+# Pepper AI: Spend less time preparing your data for analysis
 
 A web app to clean & prepare your excel data for analysis faster by manipulating it with chat commands
 
@@ -206,39 +206,6 @@ Use cases:
 - Filtering entries by asking to make new sheet
 - VLookups
 
-## UI:
-
-### Iter 01: Copywriting
-- Change the name of agent: Data explorer (done)
-- Name of excel file on top of the table (done)
-- Remove chatbox and messages, and change it to a processor interface instead of a chat one (done)
-
-Should we do single page with upload area in side bar, or, Upload page + processing page with undo, export and re-upload in bottom with full page table view
-
-One page:
-- Single page web app, no complication shifting between pages (Can still close sidebar to get full screen view)
-
-Two page:
-- More screen space for dataframe
-
-### Iter 02: Move uploaded file to sidebar
-- When uploaded file is removed stop showing dfs and wait for re-uploading
-- Show empty dataframe, sidebar and chat command when uploaded file is empty
-
-### Iter 03: Re-upload - either remove or fix
-- removed re-upload
-- fixed issue with removing uploaded files
-
-### Iter 04: Host server online
-- Host server on AWS EC2 t2.large Windows (done)
-
-### Iter 05: Deal with similar file names
-
-
-
-Next iter:
-Add Sidebar and chat interface to normal state
-Move uploader to sidebar
 Add empty dataframe when uploaded file is None
 
 
